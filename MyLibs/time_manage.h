@@ -22,12 +22,11 @@ typedef struct{
 }TIME_DATA_HandleTypdeDef;
 
 void TIME_Init();
-void TIME_Add(uint8_t day, uint8_t hour, uint8_t minute, uint16_t mass);
-void TIME_Change(uint8_t index, uint8_t day, uint8_t hour, uint8_t minute, uint16_t mass);
-void TIME_Delete(uint8_t index);
+void TIME_Add(uint8_t p_day, uint8_t p_hour, uint8_t p_minute, uint16_t p_mass);
+void TIME_Change(uint8_t p_index, uint8_t p_day, uint8_t p_hour, uint8_t p_minute, uint16_t p_mass);
+void TIME_Delete(uint8_t p_index);
 void TIME_Sort();
 void TIME_Store_To_Flash();
-//void TIME_UART_Transmit();
 
 TIME_DATA_HandleTypdeDef TIME_Data;
 

@@ -6,6 +6,6 @@
 #include "string.h"
 #include "menu.h"
 
-void CLI_Execute(char *uart_buffer, uint8_t len);
+void CLI_Execute(char *p_uart_buffer, uint8_t p_len);
 
 #endif

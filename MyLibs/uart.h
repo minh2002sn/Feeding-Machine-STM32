@@ -8,6 +8,6 @@
 
 void UART_Init();
 void UART_Handle();
-void UART_Receive(uint8_t Rx_Buffer);
+void UART_Receive(uint8_t P_Rx_Buffer);
 
 #endif

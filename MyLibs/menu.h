@@ -23,7 +23,7 @@ typedef struct{
 	MENU_STATE_HandleTypeDef state;
 }MENU_DATA_HandleTypeDef;
 
-void MENU_Init(LCD_I2C_HandleTypeDef *hlcd);
+void MENU_Init(LCD_I2C_HandleTypeDef *p_hlcd);
 void MENU_Handle();
 void SM_MENU_Set_State();
 void SM_MENU_Display();

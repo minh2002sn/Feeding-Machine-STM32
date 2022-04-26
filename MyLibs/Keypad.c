@@ -14,8 +14,8 @@ static uint8_t key_current;
 static uint8_t key_last = 0;
 static uint8_t key_debounce = 0;
 static uint8_t debouncing =0;
-static uint32_t t_debounce;
-static uint32_t t_start_press;
+static uint32_t time_debounce;
+static uint32_t time_start_press;
 static uint8_t is_press;
 
 static GPIO_TypeDef *Keypad_RowPort[KEYPAD_ROW] = {GPIOA,GPIOA,GPIOA,GPIOA};
@@ -42,29 +42,29 @@ __weak void KeypadPressingTimeoutCallback(uint8_t p_key)
 
 }
 
-void KeyPad_Select_Row(uint8_t row)
+void KeyPad_Select_Row(uint8_t p_row)
 {
-	HAL_GPIO_WritePin(Keypad_RowPort[row],Keypad_RowPin[row], GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(Keypad_RowPort[p_row],Keypad_RowPin[p_row], GPIO_PIN_RESET);
 }
 void KeyPad_UnSelect_Row()
 {
-	for(uint8_t row=0; row < KEYPAD_ROW; row++)
+	for(uint8_t t_row = 0; t_row < KEYPAD_ROW; t_row++)
 	{
-		HAL_GPIO_WritePin(Keypad_RowPort[row],Keypad_RowPin[row], GPIO_PIN_SET);
+		HAL_GPIO_WritePin(Keypad_RowPort[t_row],Keypad_RowPin[t_row], GPIO_PIN_SET);
 	}
 }
 
 static uint8_t KeyPad_GetKey()
 {
-	for(uint8_t row =0; row < KEYPAD_ROW; row++)
+	for(uint8_t t_row = 0; t_row < KEYPAD_ROW; t_row++)
 	{
 		KeyPad_UnSelect_Row();
-		KeyPad_Select_Row(row);
-		for(uint8_t col =0; col < KEYPAD_COL; col++)
+		KeyPad_Select_Row(t_row);
+		for(uint8_t t_col = 0; t_col < KEYPAD_COL; t_col++)
 		{
-			if(HAL_GPIO_ReadPin(Keypad_ColPort[col],Keypad_ColPin[col]) == 0)
+			if(HAL_GPIO_ReadPin(Keypad_ColPort[t_col],Keypad_ColPin[t_col]) == 0)
 			{
-				return key_code[row][col];
+				return key_code[t_row][t_col];
 			}
 		}
 	}
@@ -73,16 +73,16 @@ static uint8_t KeyPad_GetKey()
 
 static void Keypad_Filter()
 {
-	uint8_t key = KeyPad_GetKey();
+	uint8_t t_key = KeyPad_GetKey();
 	//khi van dang nhieu
-	if(key != key_debounce)
+	if(t_key != key_debounce)
 	{
 		debouncing = 1;
-		t_debounce = HAL_GetTick();
-		key_debounce = key;
+		time_debounce = HAL_GetTick();
+		key_debounce = t_key;
 	}
 	//trang thai da xac lap
-	if(debouncing && (HAL_GetTick() - t_debounce >= 15))
+	if(debouncing && (HAL_GetTick() - time_debounce >= 15))
 	{
 		key_current = key_debounce;
 		debouncing = 0;
@@ -99,13 +99,13 @@ void Keypad_Handle()
 		if(key_current != 0)
 		{
 			is_press = 1;
-			t_start_press = HAL_GetTick();
+			time_start_press = HAL_GetTick();
 			KeypadPressingCallback(key_current);
 		}
 		else
 		{
 			is_press = 0;
-			if(HAL_GetTick() - t_start_press <=1000)//nhan nha nhanh
+			if(HAL_GetTick() - time_start_press <=1000)//nhan nha nhanh
 			{
 				KeypadPressedShortCallback(key_last);
 			}
@@ -114,7 +114,7 @@ void Keypad_Handle()
 		key_last = key_current;
 	}
 	
-	if(is_press && (HAL_GetTick() - t_start_press >= 3000)) //nhan giu phim
+	if(is_press && (HAL_GetTick() - time_start_press >= 3000)) //nhan giu phim
 	{
 		KeypadPressingTimeoutCallback(key_current);
 		is_press = 0;

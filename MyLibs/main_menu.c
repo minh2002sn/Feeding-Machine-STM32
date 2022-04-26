@@ -44,48 +44,48 @@ void MAIN_MENU_Set_State(){
 	MENU_Data.changed = 0;
 }
 
-void MAIN_MENU_Set_State_Time(uint8_t hour, uint8_t minute, uint8_t day){
+void MAIN_MENU_Set_State_Time(uint8_t p_hour, uint8_t p_minute, uint8_t p_day){
 	if(MENU_Data.state == MAIN_MENU){
 		MENU_Data.changed = 0;
 	}
-	char time_str[8];
-	uint8_t size = sizeof(DAY_Str) / sizeof(dictionary);
-	for(int i = 0; i < size; i++){
-		if(DAY_Str[i].index == day){
-			sprintf(time_str, "%s %d:%d", DAY_Str[i].value, hour, minute);
+	char t_time_str[8];
+	uint8_t t_size = sizeof(DAY_Str) / sizeof(dictionary);
+	for(int i = 0; i < t_size; i++){
+		if(DAY_Str[i].index == p_day){
+			sprintf(t_time_str, "%s %d:%d", DAY_Str[i].value, p_hour, p_minute);
 			break;
 		}
 	}
-	strcpy(main_menu_frame[1].str, time_str);
+	strcpy(main_menu_frame[1].str, t_time_str);
 }
 
-void MAIN_MENU_Set_State_WiFi(char **arg_value, uint8_t arg_num){
-	char ssid_str[4] = {};
-	if(arg_num == 1){
-		if(strstr(arg_value[0], "SMART_CONFIG_RUN") != NULL){
+void MAIN_MENU_Set_State_WiFi(char **p_arg_value, uint8_t p_arg_num){
+	char t_ssid_str[4] = {};
+	if(p_arg_num == 1){
+		if(strstr(p_arg_value[0], "SMART_CONFIG_RUN") != NULL){
 			MAIN_MENU_Data.WIFI_State = SMART_CONFIG_RUN;
 		}
-	} else if(arg_num == 2){
-		if(strstr(arg_value[1], "DISCONNECTED") != NULL){
+	} else if(p_arg_num == 2){
+		if(strstr(p_arg_value[1], "DISCONNECTED") != NULL){
 			MAIN_MENU_Data.WIFI_State = WIFI_DISCONNECTED;
-		} else if(strstr(arg_value[1], "CONNECTING") != NULL){
+		} else if(strstr(p_arg_value[1], "CONNECTING") != NULL){
 			MAIN_MENU_Data.WIFI_State = WIFI_CONNECTING;
 		}
 	} else{
-		if(strstr(arg_value[1], "CONNECTED") != NULL){
+		if(strstr(p_arg_value[1], "CONNECTED") != NULL){
 			MAIN_MENU_Data.WIFI_State = WIFI_CONNECTED;
-			strncpy(ssid_str, arg_value[2], (strlen(arg_value[2]) >= 3) ? 3 : strlen(arg_value[2]));
+			strncpy(t_ssid_str, p_arg_value[2], (strlen(p_arg_value[2]) >= 3) ? 3 : strlen(p_arg_value[2]));
 		}
 	}
 	if(MENU_Data.state == MAIN_MENU){
 		MENU_Data.changed = 0;
 	}
-	uint8_t size = sizeof(WIFI_Str) / sizeof(dictionary);
-	for(int i = 0; i < size; i++){
+	uint8_t t_size = sizeof(WIFI_Str) / sizeof(dictionary);
+	for(int i = 0; i < t_size; i++){
 		if(WIFI_Str[i].index == MAIN_MENU_Data.WIFI_State){
 			strcpy(main_menu_frame[0].str, WIFI_Str[i].value);
 			if(MAIN_MENU_Data.WIFI_State == WIFI_CONNECTED){
-				strcat(main_menu_frame[0].str, ssid_str);
+				strcat(main_menu_frame[0].str, t_ssid_str);
 				strcat(main_menu_frame[0].str, "...");
 			}
 			break;

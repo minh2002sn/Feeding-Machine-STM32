@@ -29,10 +29,10 @@ typedef struct{
 	LC_HandleTypeDef *hlc3;
 }CONTROL_DATA_HandleTypeDef;
 
-void CONTROL_Init(LC_HandleTypeDef *hlc);
+void CONTROL_Init(LC_HandleTypeDef *p_hlc);
 void CONTROL_Handle();
 void CONTROL_Recheck_Time();
-void CONTROL_Set_Time(uint8_t hour, uint8_t minute, uint8_t day);
+void CONTROL_Set_Time(uint8_t p_hour, uint8_t p_minute, uint8_t p_day);
 
 CONTROL_DATA_HandleTypeDef CONTROL_Data;
 

@@ -1,8 +1,8 @@
 #include "menu.h"
 
-void MENU_Init(LCD_I2C_HandleTypeDef *hlcd){
+void MENU_Init(LCD_I2C_HandleTypeDef *p_hlcd){
 	MENU_Data.changed = 0;
-	MENU_Data.hlcd = hlcd;
+	MENU_Data.hlcd = p_hlcd;
 	MENU_Data.state = MAIN_MENU;
 	MAIN_MENU_Init();
 	TL_MENU_Init();
@@ -40,11 +40,6 @@ void MENU_Handle(){
 				LCD_Backlight(MENU_Data.hlcd);
 				LCD_Cursor_No_Blink(MENU_Data.hlcd);
 				SM_MENU_Display();	// This function is in menu.c
-				MENU_Data.changed = 1;
-				break;
-			case CALIB_MENU:
-				LCD_Backlight(MENU_Data.hlcd);
-				LCD_Cursor_No_Blink(MENU_Data.hlcd);
 				MENU_Data.changed = 1;
 				break;
 			default:

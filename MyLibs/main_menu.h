@@ -26,8 +26,8 @@ typedef struct{
 
 void MAIN_MENU_Init();
 void MAIN_MENU_Set_State();
-void MAIN_MENU_Set_State_Time(uint8_t hour, uint8_t minute, uint8_t day);
-void MAIN_MENU_Set_State_WiFi(char **arg_value, uint8_t arg_num);
+void MAIN_MENU_Set_State_Time(uint8_t p_hour, uint8_t p_minute, uint8_t p_day);
+void MAIN_MENU_Set_State_WiFi(char **p_arg_value, uint8_t p_arg_num);
 void MAIN_MENU_Display();
 
 MAIN_MENU_DATA_HandleTypeDef MAIN_MENU_Data;
