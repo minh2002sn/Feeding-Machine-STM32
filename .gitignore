@@ -1,0 +1,10 @@
+.settings/
+Debug/
+Drivers/
+.cproject
+.mxproject
+.project
+Feeding Machine_1.1 Debug.cfg
+Feeding Machine_1.1 Debug.launch
+Feeding Machine_1.1.ioc
+STM32F103C8TX_FLASH.ld
