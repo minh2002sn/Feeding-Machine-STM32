@@ -42,11 +42,11 @@ typedef struct {
 
 // Function prototypes
 bool MPU6050_init(void);
-void MPU6050_read_accel(MPU6050_t *mpu6050);
-void MPU6050_read_gyro(MPU6050_t *mpu6050);
-void MPU6050_read_all(MPU6050_t *mpu6050);
-void MPU6050_calib(MPU6050_t *mpu6050);
-void MPU6050_callback(void *context);
+void MPU6050_read_accel(MPU6050_t *p_mpu6050);
+void MPU6050_read_gyro(MPU6050_t *p_mpu6050);
+void MPU6050_read_all(MPU6050_t *p_mpu6050);
+void MPU6050_calib(MPU6050_t *p_mpu6050);
+void MPU6050_callback(void *p_context);
 
 #ifdef __cplusplus
 }

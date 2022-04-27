@@ -24,9 +24,9 @@ typedef struct{
 	float b;
 }LC_HandleTypeDef;
 
-void LC_Init(LC_HandleTypeDef *hlc, GPIO_TypeDef *DT_GPIOx, uint16_t DT_GPIO_Pin, GPIO_TypeDef *CLK_GPIOx, uint16_t CLK_GPIO_Pin);
-long LC_Read(LC_HandleTypeDef *hlc);
-void LC_Calibration(LC_HandleTypeDef *hlc);
-float LC_Get_Mass(LC_HandleTypeDef *hlc);
+void LC_Init(LC_HandleTypeDef *p_hlc, GPIO_TypeDef *p_DT_GPIOx, uint16_t p_DT_GPIO_Pin, GPIO_TypeDef *p_CLK_GPIOx, uint16_t p_CLK_GPIO_Pin);
+long LC_Read(LC_HandleTypeDef *p_hlc);
+void LC_Calibration(LC_HandleTypeDef *p_hlc);
+float LC_Get_Mass(LC_HandleTypeDef *p_hlc);
 
 #endif

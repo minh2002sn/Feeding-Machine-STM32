@@ -8,8 +8,8 @@ void SERVO_Init(){
 	SERVO_Data.state = SERVO_OFF;
 }
 
-void SERVO_Set_State(SERVO_STATE_HandleTypeDef state){
-	SERVO_Data.state = state;
+void SERVO_Set_State(SERVO_STATE_HandleTypeDef p_state){
+	SERVO_Data.state = p_state;
 }
 
 void SERVO_Handle(){

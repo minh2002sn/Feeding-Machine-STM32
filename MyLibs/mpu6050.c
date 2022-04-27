@@ -1,5 +1,5 @@
 /*
- * mpu6050.c
+ * p_mpu6050.c
  *
  */
 
@@ -140,33 +140,33 @@ Kalman_t kalman_roll = {
         .R_measure = 0.03f
 };
 
-static float Kalman_filter(Kalman_t *Kalman, float newAngle, float newRate);
+static float Kalman_filter(Kalman_t *p_Kalman, float p_newAngle, float p_newRate);
 
 bool MPU6050_init(void)
 {
-    uint8_t who_am_i;
-    HAL_I2C_Mem_Read(&MPU6050_I2C, MPU6050_ADDR << 1, WHO_AM_I, I2C_MEMADD_SIZE_8BIT, &who_am_i, 1, I2C_TIMEOUT);
+    uint8_t t_who_am_i;
+    HAL_I2C_Mem_Read(&MPU6050_I2C, MPU6050_ADDR << 1, WHO_AM_I, I2C_MEMADD_SIZE_8BIT, &t_who_am_i, 1, I2C_TIMEOUT);
 
-    if (who_am_i == 0x68)
+    if (t_who_am_i == 0x68)
     {
-    	uint8_t Data;
-        Data = 0;
-        HAL_I2C_Mem_Write(&MPU6050_I2C, MPU6050_ADDR << 1, PWR_MGMT_1, I2C_MEMADD_SIZE_8BIT, &Data, 1, I2C_TIMEOUT);
+    	uint8_t t_Data;
+    	t_Data = 0;
+        HAL_I2C_Mem_Write(&MPU6050_I2C, MPU6050_ADDR << 1, PWR_MGMT_1, I2C_MEMADD_SIZE_8BIT, &t_Data, 1, I2C_TIMEOUT);
 
-        Data = 0x07;
-        HAL_I2C_Mem_Write(&MPU6050_I2C, MPU6050_ADDR << 1, SMPLRT_DIV, I2C_MEMADD_SIZE_8BIT, &Data, 1, I2C_TIMEOUT);
+        t_Data = 0x07;
+        HAL_I2C_Mem_Write(&MPU6050_I2C, MPU6050_ADDR << 1, SMPLRT_DIV, I2C_MEMADD_SIZE_8BIT, &t_Data, 1, I2C_TIMEOUT);
 
-        Data = 0x00;
-        HAL_I2C_Mem_Write(&MPU6050_I2C, MPU6050_ADDR << 1, ACCEL_CONFIG, I2C_MEMADD_SIZE_8BIT, &Data, 1, I2C_TIMEOUT);
+        t_Data = 0x00;
+        HAL_I2C_Mem_Write(&MPU6050_I2C, MPU6050_ADDR << 1, ACCEL_CONFIG, I2C_MEMADD_SIZE_8BIT, &t_Data, 1, I2C_TIMEOUT);
 
-        Data = 0x00;
-        HAL_I2C_Mem_Write(&MPU6050_I2C, MPU6050_ADDR << 1, GYRO_CONFIG, I2C_MEMADD_SIZE_8BIT, &Data, 1, I2C_TIMEOUT);
+        t_Data = 0x00;
+        HAL_I2C_Mem_Write(&MPU6050_I2C, MPU6050_ADDR << 1, GYRO_CONFIG, I2C_MEMADD_SIZE_8BIT, &t_Data, 1, I2C_TIMEOUT);
 
-        Data = 0x01;
-        HAL_I2C_Mem_Write(&MPU6050_I2C, MPU6050_ADDR << 1, INT_ENABLE, I2C_MEMADD_SIZE_8BIT, &Data, 1, I2C_TIMEOUT);
+        t_Data = 0x01;
+        HAL_I2C_Mem_Write(&MPU6050_I2C, MPU6050_ADDR << 1, INT_ENABLE, I2C_MEMADD_SIZE_8BIT, &t_Data, 1, I2C_TIMEOUT);
 
-        Data = 0x00;
-        HAL_I2C_Mem_Write(&MPU6050_I2C, MPU6050_ADDR << 1, USER_CTRL, I2C_MEMADD_SIZE_8BIT, &Data, 1, I2C_TIMEOUT);
+        t_Data = 0x00;
+        HAL_I2C_Mem_Write(&MPU6050_I2C, MPU6050_ADDR << 1, USER_CTRL, I2C_MEMADD_SIZE_8BIT, &t_Data, 1, I2C_TIMEOUT);
 
         return true;
     }
@@ -174,133 +174,133 @@ bool MPU6050_init(void)
     return false;
 }
 
-void MPU6050_read_accel(MPU6050_t *mpu6050)
+void MPU6050_read_accel(MPU6050_t *p_mpu6050)
 {
-    uint8_t Data[6];
-    HAL_I2C_Mem_Read(&MPU6050_I2C, MPU6050_ADDR << 1, ACCEL_XOUT_H, I2C_MEMADD_SIZE_8BIT, Data, sizeof(Data), I2C_TIMEOUT);
+    uint8_t t_Data[6];
+    HAL_I2C_Mem_Read(&MPU6050_I2C, MPU6050_ADDR << 1, ACCEL_XOUT_H, I2C_MEMADD_SIZE_8BIT, t_Data, sizeof(t_Data), I2C_TIMEOUT);
 
-    int16_t accel_X_RAW = (int16_t)(Data[0] << 8 | Data[1]);
-    int16_t accel_Y_RAW = (int16_t)(Data[2] << 8 | Data[3]);
-    int16_t accel_Z_RAW = (int16_t)(Data[4] << 8 | Data[5]);
-    mpu6050->accel_X = accel_X_RAW / ACCEL_SENSITIVITY - mpu6050->accel_bias[0];
-    mpu6050->accel_Y = accel_Y_RAW / ACCEL_SENSITIVITY - mpu6050->accel_bias[1];
-    mpu6050->accel_Z = accel_Z_RAW / ACCEL_SENSITIVITY - mpu6050->accel_bias[2];
+    int16_t t_accel_X_RAW = (int16_t)(t_Data[0] << 8 | t_Data[1]);
+    int16_t t_accel_Y_RAW = (int16_t)(t_Data[2] << 8 | t_Data[3]);
+    int16_t t_accel_Z_RAW = (int16_t)(t_Data[4] << 8 | t_Data[5]);
+    p_mpu6050->accel_X = t_accel_X_RAW / ACCEL_SENSITIVITY - p_mpu6050->accel_bias[0];
+    p_mpu6050->accel_Y = t_accel_Y_RAW / ACCEL_SENSITIVITY - p_mpu6050->accel_bias[1];
+    p_mpu6050->accel_Z = t_accel_Z_RAW / ACCEL_SENSITIVITY - p_mpu6050->accel_bias[2];
 }
 
-void MPU6050_read_gyro(MPU6050_t *mpu6050)
+void MPU6050_read_gyro(MPU6050_t *p_mpu6050)
 {
-    uint8_t Data[6];
-    HAL_I2C_Mem_Read(&MPU6050_I2C, MPU6050_ADDR << 1, GYRO_XOUT_H, I2C_MEMADD_SIZE_8BIT, Data, sizeof(Data), I2C_TIMEOUT);
+    uint8_t t_Data[6];
+    HAL_I2C_Mem_Read(&MPU6050_I2C, MPU6050_ADDR << 1, GYRO_XOUT_H, I2C_MEMADD_SIZE_8BIT, t_Data, sizeof(t_Data), I2C_TIMEOUT);
 
-    int16_t gyro_X_RAW = (int16_t)(Data[0] << 8 | Data[1]);
-    int16_t gyro_Y_RAW = (int16_t)(Data[2] << 8 | Data[3]);
-    int16_t gyro_Z_RAW = (int16_t)(Data[4] << 8 | Data[5]);
-    mpu6050->gyro_X = gyro_X_RAW / GYRO_SENSITIVITY - mpu6050->gyro_bias[0];
-    mpu6050->gyro_Y = gyro_Y_RAW / GYRO_SENSITIVITY - mpu6050->gyro_bias[1];
-    mpu6050->gyro_Z = gyro_Z_RAW / GYRO_SENSITIVITY - mpu6050->gyro_bias[2];
+    int16_t t_gyro_X_RAW = (int16_t)(t_Data[0] << 8 | t_Data[1]);
+    int16_t t_gyro_Y_RAW = (int16_t)(t_Data[2] << 8 | t_Data[3]);
+    int16_t t_gyro_Z_RAW = (int16_t)(t_Data[4] << 8 | t_Data[5]);
+    p_mpu6050->gyro_X = t_gyro_X_RAW / GYRO_SENSITIVITY - p_mpu6050->gyro_bias[0];
+    p_mpu6050->gyro_Y = t_gyro_Y_RAW / GYRO_SENSITIVITY - p_mpu6050->gyro_bias[1];
+    p_mpu6050->gyro_Z = t_gyro_Z_RAW / GYRO_SENSITIVITY - p_mpu6050->gyro_bias[2];
 }
 
-void MPU6050_read_all(MPU6050_t *mpu6050)
+void MPU6050_read_all(MPU6050_t *p_mpu6050)
 {
-    uint8_t Data[14];
-    HAL_I2C_Mem_Read(&MPU6050_I2C, MPU6050_ADDR << 1, ACCEL_XOUT_H, I2C_MEMADD_SIZE_8BIT, Data, sizeof(Data), I2C_TIMEOUT);
+    uint8_t t_Data[14];
+    HAL_I2C_Mem_Read(&MPU6050_I2C, MPU6050_ADDR << 1, ACCEL_XOUT_H, I2C_MEMADD_SIZE_8BIT, t_Data, sizeof(t_Data), I2C_TIMEOUT);
 
-    int16_t accel_X_RAW = (int16_t)(Data[0] << 8 | Data[1]);
-    int16_t accel_Y_RAW = (int16_t)(Data[2] << 8 | Data[3]);
-    int16_t accel_Z_RAW = (int16_t)(Data[4] << 8 | Data[5]);
-    int16_t temp_RAW = (int16_t)(Data[6] << 8 | Data[7]);
-    int16_t gyro_X_RAW = (int16_t)(Data[8] << 8 | Data[9]);
-    int16_t gyro_Y_RAW = (int16_t)(Data[10] << 8 | Data[11]);
-    int16_t gyro_Z_RAW = (int16_t)(Data[12] << 8 | Data[13]);
+    int16_t t_accel_X_RAW = (int16_t)(t_Data[0] << 8 | t_Data[1]);
+    int16_t t_accel_Y_RAW = (int16_t)(t_Data[2] << 8 | t_Data[3]);
+    int16_t t_accel_Z_RAW = (int16_t)(t_Data[4] << 8 | t_Data[5]);
+    int16_t t_temp_RAW = (int16_t)(t_Data[6] << 8 | t_Data[7]);
+    int16_t t_gyro_X_RAW = (int16_t)(t_Data[8] << 8 | t_Data[9]);
+    int16_t t_gyro_Y_RAW = (int16_t)(t_Data[10] << 8 | t_Data[11]);
+    int16_t t_gyro_Z_RAW = (int16_t)(t_Data[12] << 8 | t_Data[13]);
 
-    mpu6050->accel_X = accel_X_RAW / ACCEL_SENSITIVITY - mpu6050->accel_bias[0];
-	mpu6050->accel_Y = accel_Y_RAW / ACCEL_SENSITIVITY - mpu6050->accel_bias[1];
-	mpu6050->accel_Z = accel_Z_RAW / ACCEL_SENSITIVITY - mpu6050->accel_bias[2];
+    p_mpu6050->accel_X = t_accel_X_RAW / ACCEL_SENSITIVITY - p_mpu6050->accel_bias[0];
+	p_mpu6050->accel_Y = t_accel_Y_RAW / ACCEL_SENSITIVITY - p_mpu6050->accel_bias[1];
+	p_mpu6050->accel_Z = t_accel_Z_RAW / ACCEL_SENSITIVITY - p_mpu6050->accel_bias[2];
 
-	mpu6050->gyro_X = gyro_X_RAW / GYRO_SENSITIVITY - mpu6050->gyro_bias[0];
-	mpu6050->gyro_Y = gyro_Y_RAW / GYRO_SENSITIVITY - mpu6050->gyro_bias[1];
-	mpu6050->gyro_Z = gyro_Z_RAW / GYRO_SENSITIVITY - mpu6050->gyro_bias[2];
+	p_mpu6050->gyro_X = t_gyro_X_RAW / GYRO_SENSITIVITY - p_mpu6050->gyro_bias[0];
+	p_mpu6050->gyro_Y = t_gyro_Y_RAW / GYRO_SENSITIVITY - p_mpu6050->gyro_bias[1];
+	p_mpu6050->gyro_Z = t_gyro_Z_RAW / GYRO_SENSITIVITY - p_mpu6050->gyro_bias[2];
 }
 
-void MPU6050_calib(MPU6050_t *mpu6050)
+void MPU6050_calib(MPU6050_t *p_mpu6050)
 {
-	float temp_accel[3] = {0, 0, 0};
-	float temp_gyro[3] = {0, 0, 0};
+	float t_temp_accel[3] = {0, 0, 0};
+	float t_temp_gyro[3] = {0, 0, 0};
 
 	for (uint16_t i = 0; i < 256; i++)
 	{
-		MPU6050_t raw_data = {
+		MPU6050_t t_raw_data = {
 				.accel_bias[0] = 0, .accel_bias[1] = 0, .accel_bias[2] = 0,
 				.gyro_bias[0] = 0, .gyro_bias[1] = 0, .gyro_bias[2] = 0
 		};
-		MPU6050_read_all(&raw_data);
-		temp_accel[0] += raw_data.accel_X;
-		temp_accel[1] += raw_data.accel_Y;
-		temp_accel[2] += raw_data.accel_Z;
-		temp_gyro[0] += raw_data.gyro_X;
-		temp_gyro[1] += raw_data.gyro_Y;
-		temp_gyro[2] += raw_data.gyro_Z;
+		MPU6050_read_all(&t_raw_data);
+		t_temp_accel[0] += t_raw_data.accel_X;
+		t_temp_accel[1] += t_raw_data.accel_Y;
+		t_temp_accel[2] += t_raw_data.accel_Z;
+		t_temp_gyro[0] += t_raw_data.gyro_X;
+		t_temp_gyro[1] += t_raw_data.gyro_Y;
+		t_temp_gyro[2] += t_raw_data.gyro_Z;
 	}
 
-	mpu6050->accel_X = mpu6050->accel_bias[0] = temp_accel[0] / 256;
-	mpu6050->accel_Y = mpu6050->accel_bias[1] = temp_accel[1] / 256;
-//	mpu6050->accel_Z = mpu6050->accel_bias[2] = temp_accel[2] / 256;
-	mpu6050->gyro_X = mpu6050->gyro_bias[0] = temp_gyro[0] / 256;
-	mpu6050->gyro_Y = mpu6050->gyro_bias[1] = temp_gyro[1] / 256;
-	mpu6050->gyro_Z = mpu6050->gyro_bias[2] = temp_gyro[2] / 256;
+	p_mpu6050->accel_X = p_mpu6050->accel_bias[0] = t_temp_accel[0] / 256;
+	p_mpu6050->accel_Y = p_mpu6050->accel_bias[1] = t_temp_accel[1] / 256;
+//	p_mpu6050->accel_Z = p_mpu6050->accel_bias[2] = temp_accel[2] / 256;
+	p_mpu6050->gyro_X = p_mpu6050->gyro_bias[0] = t_temp_gyro[0] / 256;
+	p_mpu6050->gyro_Y = p_mpu6050->gyro_bias[1] = t_temp_gyro[1] / 256;
+	p_mpu6050->gyro_Z = p_mpu6050->gyro_bias[2] = t_temp_gyro[2] / 256;
 }
 
-static float Kalman_filter(Kalman_t *Kalman, float newAngle, float newRate)
+static float Kalman_filter(Kalman_t *p_Kalman, float p_newAngle, float p_newRate)
 {
-	float rate = newRate - Kalman->bias;
-	Kalman->angle += dt * rate;
+	float t_rate = p_newRate - p_Kalman->bias;
+	p_Kalman->angle += dt * t_rate;
 
-	Kalman->P[0][0] += dt * (dt * Kalman->P[1][1] - Kalman->P[0][1] - Kalman->P[1][0] + Kalman->Q_angle);
-	Kalman->P[0][1] -= dt * Kalman->P[1][1];
-	Kalman->P[1][0] -= dt * Kalman->P[1][1];
-	Kalman->P[1][1] += Kalman->Q_bias * dt;
+	p_Kalman->P[0][0] += dt * (dt * p_Kalman->P[1][1] - p_Kalman->P[0][1] - p_Kalman->P[1][0] + p_Kalman->Q_angle);
+	p_Kalman->P[0][1] -= dt * p_Kalman->P[1][1];
+	p_Kalman->P[1][0] -= dt * p_Kalman->P[1][1];
+	p_Kalman->P[1][1] += p_Kalman->Q_bias * dt;
 
-	float S = Kalman->P[0][0] + Kalman->R_measure;
-	float K[2];
-	K[0] = Kalman->P[0][0] / S;
-	K[1] = Kalman->P[1][0] / S;
+	float t_S = p_Kalman->P[0][0] + p_Kalman->R_measure;
+	float t_K[2];
+	t_K[0] = p_Kalman->P[0][0] / t_S;
+	t_K[1] = p_Kalman->P[1][0] / t_S;
 
-	float y = newAngle - Kalman->angle;
-	Kalman->angle += K[0] * y;
-	Kalman->bias += K[1] * y;
+	float t_y = p_newAngle - p_Kalman->angle;
+	p_Kalman->angle += t_K[0] * t_y;
+	p_Kalman->bias += t_K[1] * t_y;
 
-	float P00_temp = Kalman->P[0][0];
-	float P01_temp = Kalman->P[0][1];
+	float t_P00_temp = p_Kalman->P[0][0];
+	float t_P01_temp = p_Kalman->P[0][1];
 
-	Kalman->P[0][0] -= K[0] * P00_temp;
-	Kalman->P[0][1] -= K[0] * P01_temp;
-	Kalman->P[1][0] -= K[1] * P00_temp;
-	Kalman->P[1][1] -= K[1] * P01_temp;
+	p_Kalman->P[0][0] -= t_K[0] * t_P00_temp;
+	p_Kalman->P[0][1] -= t_K[0] * t_P01_temp;
+	p_Kalman->P[1][0] -= t_K[1] * t_P00_temp;
+	p_Kalman->P[1][1] -= t_K[1] * t_P01_temp;
 
-	return Kalman->angle;
+	return p_Kalman->angle;
 }
 
 void MPU6050_callback(void *context)
 {
-	MPU6050_t *mpu6050 = (MPU6050_t *)context;
-	MPU6050_read_all(mpu6050);
+	MPU6050_t *t_mpu6050 = (MPU6050_t *)context;
+	MPU6050_read_all(t_mpu6050);
 
-	float accel_roll  = atan2(mpu6050->accel_Y, mpu6050->accel_Z) * 180 / M_PI;
-	float accel_pitch = atan2(-mpu6050->accel_X, sqrt(mpu6050->accel_Y * mpu6050->accel_Y + mpu6050->accel_Z * mpu6050->accel_Z)) * 180 / M_PI;
+	float t_accel_roll  = atan2(t_mpu6050->accel_Y, t_mpu6050->accel_Z) * 180 / M_PI;
+	float t_accel_pitch = atan2(-t_mpu6050->accel_X, sqrt(t_mpu6050->accel_Y * t_mpu6050->accel_Y + t_mpu6050->accel_Z * t_mpu6050->accel_Z)) * 180 / M_PI;
 
-	float roll_rate = mpu6050->gyro_X * dt;
-	float pitch_rate = mpu6050->gyro_Y * dt;
-	float yaw_rate = mpu6050->gyro_Z * dt;
+	float t_roll_rate = t_mpu6050->gyro_X * dt;
+	float t_pitch_rate = t_mpu6050->gyro_Y * dt;
+	float t_yaw_rate = t_mpu6050->gyro_Z * dt;
 
 	#ifndef KALMAN_FILTER
 		// Complementary filter
-		mpu6050->roll = alpha * (mpu6050->roll + roll_rate) + (1 - alpha) * accel_roll;
-		mpu6050->pitch = alpha * (mpu6050->pitch + pitch_rate) + (1 - alpha) * accel_pitch;
+		t_mpu6050->roll = alpha * (t_mpu6050->roll + t_roll_rate) + (1 - alpha) * t_accel_roll;
+		t_mpu6050->pitch = alpha * (t_mpu6050->pitch + t_pitch_rate) + (1 - alpha) * t_accel_pitch;
 	#else
 		// Kalman filter
-		mpu6050->roll = Kalman_filter(&kalman_roll, accel_roll, roll_rate);
-		mpu6050->pitch = Kalman_filter(&kalman_pitch, accel_pitch, pitch_rate);
+		t_mpu6050->roll = Kalman_filter(&kalman_roll, t_accel_roll, t_roll_rate);
+		t_mpu6050->pitch = Kalman_filter(&kalman_pitch, t_accel_pitch, t_pitch_rate);
 	#endif
 
-	mpu6050->yaw = mpu6050->yaw + yaw_rate;
+	t_mpu6050->yaw = t_mpu6050->yaw + t_yaw_rate;
 }

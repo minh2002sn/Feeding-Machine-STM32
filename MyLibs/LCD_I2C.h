@@ -62,20 +62,20 @@ typedef struct{
 	I2C_HandleTypeDef *hi2c;
 } LCD_I2C_HandleTypeDef;
 
-void LCD_Init(LCD_I2C_HandleTypeDef *lcd, I2C_HandleTypeDef *hi2c, uint8_t cols, uint8_t rows, uint8_t SLAVE_ADDRESS);
-void LCD_Write(LCD_I2C_HandleTypeDef *lcd, const char *str, ...);
-void LCD_Write_Custom_Char(LCD_I2C_HandleTypeDef *lcd, char location);
-void LCD_Clear(LCD_I2C_HandleTypeDef *lcd);
-void LCD_Set_Cursor(LCD_I2C_HandleTypeDef *lcd, uint8_t col, uint8_t row);
-void LCD_Create_Char(LCD_I2C_HandleTypeDef *lcd, uint8_t location, uint8_t charMap[]);
-void LCD_Backlight(LCD_I2C_HandleTypeDef *lcd);
-void LCD_No_Backlight(LCD_I2C_HandleTypeDef *lcd);
-void LCD_Cursor_Blink(LCD_I2C_HandleTypeDef *lcd);
-void LCD_Cursor_No_Blink(LCD_I2C_HandleTypeDef *lcd);
-void LCD_Display_On(LCD_I2C_HandleTypeDef *lcd);
-void LCD_Display_Off(LCD_I2C_HandleTypeDef *lcd);
+void LCD_Init(LCD_I2C_HandleTypeDef *p_lcd, I2C_HandleTypeDef *p_hi2c, uint8_t p_cols, uint8_t p_rows, uint8_t p_SLAVE_ADDRESS);
+void LCD_Write(LCD_I2C_HandleTypeDef *p_lcd, const char *p_str, ...);
+void LCD_Write_Custom_Char(LCD_I2C_HandleTypeDef *p_lcd, char p_location);
+void LCD_Clear(LCD_I2C_HandleTypeDef *p_lcd);
+void LCD_Set_Cursor(LCD_I2C_HandleTypeDef *p_lcd, uint8_t p_col, uint8_t p_row);
+void LCD_Create_Char(LCD_I2C_HandleTypeDef *p_lcd, uint8_t p_location, uint8_t p_charMap[]);
+void LCD_Backlight(LCD_I2C_HandleTypeDef *p_lcd);
+void LCD_No_Backlight(LCD_I2C_HandleTypeDef *p_lcd);
+void LCD_Cursor_Blink(LCD_I2C_HandleTypeDef *p_lcd);
+void LCD_Cursor_No_Blink(LCD_I2C_HandleTypeDef *p_lcd);
+void LCD_Display_On(LCD_I2C_HandleTypeDef *p_lcd);
+void LCD_Display_Off(LCD_I2C_HandleTypeDef *p_lcd);
 
-void LCD_Send_Command(LCD_I2C_HandleTypeDef *lcd, char cmd);
-void LCD_Send_Data(LCD_I2C_HandleTypeDef *lcd, char data);
+void LCD_Send_Command(LCD_I2C_HandleTypeDef *p_lcd, char p_cmd);
+void LCD_Send_Data(LCD_I2C_HandleTypeDef *p_lcd, char p_data);
 
 #endif

@@ -16,7 +16,7 @@ typedef struct{
 }SERVO_DATA_HandleTypeDef;
 
 void SERVO_Init();
-void SERVO_Set_State(SERVO_STATE_HandleTypeDef state);
+void SERVO_Set_State(SERVO_STATE_HandleTypeDef p_state);
 void SERVO_Handle();
 
 SERVO_DATA_HandleTypeDef SERVO_Data;

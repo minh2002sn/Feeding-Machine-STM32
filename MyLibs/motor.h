@@ -23,8 +23,8 @@ typedef struct{
 	MOTOR_STATE_HandleTypdeDef state;
 }MOTOR_DATA_HandleTypeDef;
 
-void MOTOR_Init(MOTOR_MOVE_HandleTypeDef move, uint8_t ccr_run_value);
-void MOTOR_Set_State(MOTOR_STATE_HandleTypdeDef state);
+void MOTOR_Init(MOTOR_MOVE_HandleTypeDef p_move, uint8_t p_ccr_run_value);
+void MOTOR_Set_State(MOTOR_STATE_HandleTypdeDef p_state);
 void MOTOR_Handle();
 
 MOTOR_DATA_HandleTypeDef MOTOR_Data;

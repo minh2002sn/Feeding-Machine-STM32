@@ -78,8 +78,8 @@ LC_HandleTypeDef hlc1;
 MPU6050_t mpu;
 
 static uint8_t Rx_Buffer;
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
-	if(huart->Instance == huart2.Instance){
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *p_huart){
+	if(p_huart->Instance == huart2.Instance){
 		UART_Receive(Rx_Buffer);
 		HAL_UART_Receive_IT(&huart2, &Rx_Buffer, 1);
 	}

@@ -2,16 +2,16 @@
 
 extern TIM_HandleTypeDef htim3;
 
-void MOTOR_Init(MOTOR_MOVE_HandleTypeDef move, uint8_t ccr_run_value){
+void MOTOR_Init(MOTOR_MOVE_HandleTypeDef p_move, uint8_t p_ccr_run_value){
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
-	MOTOR_Data.ccr_run_value = ccr_run_value;
-	MOTOR_Data.move = move;
+	MOTOR_Data.ccr_run_value = p_ccr_run_value;
+	MOTOR_Data.move = p_move;
 	MOTOR_Data.state = MOTOR_OFF;
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
 }
 
-void MOTOR_Set_State(MOTOR_STATE_HandleTypdeDef state){
-	MOTOR_Data.state = state;
+void MOTOR_Set_State(MOTOR_STATE_HandleTypdeDef p_state){
+	MOTOR_Data.state = p_state;
 }
 
 void MOTOR_Handle(){
