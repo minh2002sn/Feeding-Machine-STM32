@@ -1,16 +1,16 @@
 #include "loadcell.h"
 
-extern UART_HandleTypeDef huart2;
+extern UART_HandleTypeDef huart1;
 
-void LC_Init(LC_HandleTypeDef *p_hlc, GPIO_TypeDef *p_DT_GPIOx, uint16_t p_DT_GPIO_Pin, GPIO_TypeDef *p_CLK_GPIOx, uint16_t p_CLK_GPIO_Pin){
+void LC_Init(LC_HandleTypeDef *p_hlc, GPIO_TypeDef *p_DT_GPIOx, uint16_t p_DT_GPIO_Pin, GPIO_TypeDef *p_CLK_GPIOx, uint16_t p_CLK_GPIO_Pin, float p_a, float p_b, float p_error){
 	p_hlc->DT_GPIOx = p_DT_GPIOx;
 	p_hlc->DT_GPIO_Pin = p_DT_GPIO_Pin;
 	p_hlc->CLK_GPIOx = p_CLK_GPIOx;
 	p_hlc->CLK_GPIO_Pin = p_CLK_GPIO_Pin;
 	p_hlc->calib_state = NO_CALIBRATE;
-	p_hlc->a = 0.000437;
-	p_hlc->b = -3916.127441;
-	p_hlc->b += 3;
+	p_hlc->a = p_a;
+	p_hlc->b = p_b;
+	p_hlc->b += p_error;
 }
 
 long LC_Read(LC_HandleTypeDef *p_hlc){
@@ -38,7 +38,7 @@ void LC_Calibration(LC_HandleTypeDef *p_hlc){
 	float t_x1 = 0;
 	float t_x0 = 0;
 
-//	HAL_UART_Transmit(&huart2, "Getting t_x0\n", 11, 100);
+	HAL_UART_Transmit(&huart1, "Getting t_x0\n", 13, 100);
 
 //	p_hlc->calib_state = GETTING_X0;
 	for(int i = 0; i < NUMBER_OF_SAMPLE; i++){
@@ -48,10 +48,10 @@ void LC_Calibration(LC_HandleTypeDef *p_hlc){
 	t_x0 /= (float)NUMBER_OF_SAMPLE;
 
 //	p_hlc->calib_state = WAITING_SAMPLE_MASS;
-//	HAL_UART_Transmit(&huart2, "Waiting sample mass\n", 20, 100);
+	HAL_UART_Transmit(&huart1, "Waiting sample mass\n", 20, 100);
 	while(1){
 		if(LC_Read(p_hlc) > t_x0 + 10000){
-//			HAL_UART_Transmit(&huart2, "Getting t_x1\n", 11, 100);
+			HAL_UART_Transmit(&huart1, "Getting t_x1\n", 13, 100);
 //			p_hlc->calib_state = GETTING_X1;
 			HAL_Delay(2000);
 			for(int i = 0; i < NUMBER_OF_SAMPLE; i++){
@@ -64,19 +64,13 @@ void LC_Calibration(LC_HandleTypeDef *p_hlc){
 	}
 	p_hlc->a = t_y1 / (t_x1 - t_x0);
 	p_hlc->b = -t_y1 * t_x0 / (t_x1 - t_x0);
-//	uint8_t *data;
-//	data = &(p_hlc->a);
-//	uint8_t Tx_Buff[20] = {};
-//	sprintf(Tx_Buff, "%x %x %x %x\n", data[3], data[2], data[1], data[0]);
-//	HAL_UART_Transmit(&huart2, Tx_Buff, 20, 500);
-//	data = &(p_hlc->b);
-//	sprintf(Tx_Buff, "%x %x %x %x\n", data[3], data[2], data[1], data[0]);
-//	HAL_UART_Transmit(&huart2, Tx_Buff, 20, 500);
-//	sprintf(Tx_Buff, "%lf ", 20, p_hlc->a);
-//	HAL_UART_Transmit(&huart2, Tx_Buff, 20, 500);
-//	sprintf(Tx_Buff, "%lf\n", 20, p_hlc->b);
-//	HAL_UART_Transmit(&huart2, Tx_Buff, 20, 500);
-//	HAL_UART_Transmit(&huart2, "Calibrate done\n", 11, 100);
+
+	uint8_t t_Tx_Buff[20] = {};
+	sprintf((char*)t_Tx_Buff, "%lf ", p_hlc->a);
+	HAL_UART_Transmit(&huart1, t_Tx_Buff, 20, 500);
+	sprintf((char*)t_Tx_Buff, "%lf\n", p_hlc->b);
+	HAL_UART_Transmit(&huart1, t_Tx_Buff, 20, 500);
+	HAL_UART_Transmit(&huart1, "Calibrate done\n", 15, 100);
 
 //	p_hlc->calib_state = CALIBRATED;
 }

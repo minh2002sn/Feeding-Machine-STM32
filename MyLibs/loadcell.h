@@ -2,6 +2,7 @@
 #define LOADCELL_H
 
 #include "stdint.h"
+#include "stdio.h"
 #include "stm32f1xx_hal.h"
 
 #define NUMBER_OF_SAMPLE 100
@@ -24,7 +25,7 @@ typedef struct{
 	float b;
 }LC_HandleTypeDef;
 
-void LC_Init(LC_HandleTypeDef *p_hlc, GPIO_TypeDef *p_DT_GPIOx, uint16_t p_DT_GPIO_Pin, GPIO_TypeDef *p_CLK_GPIOx, uint16_t p_CLK_GPIO_Pin);
+void LC_Init(LC_HandleTypeDef *p_hlc, GPIO_TypeDef *p_DT_GPIOx, uint16_t p_DT_GPIO_Pin, GPIO_TypeDef *p_CLK_GPIOx, uint16_t p_CLK_GPIO_Pin, float p_a, float p_b, float p_error);
 long LC_Read(LC_HandleTypeDef *p_hlc);
 void LC_Calibration(LC_HandleTypeDef *p_hlc);
 float LC_Get_Mass(LC_HandleTypeDef *p_hlc);
