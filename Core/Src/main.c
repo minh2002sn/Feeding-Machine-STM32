@@ -74,7 +74,7 @@ static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN 0 */
 
 LCD_I2C_HandleTypeDef hlcd;
-LC_HandleTypeDef hlc1;
+LC_HandleTypeDef hlc1, hlc2, hlc3;
 MPU6050_t mpu;
 
 static uint8_t Rx_Buffer;
@@ -122,21 +122,26 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 
-  HAL_UART_Receive_IT(&huart2, &Rx_Buffer, 1);
+//  HAL_UART_Receive_IT(&huart2, &Rx_Buffer, 1);
   LCD_Init(&hlcd, &hi2c2, 20, 4, 0x4E);
-  LC_Init(&hlc1, GPIOA, GPIO_PIN_4, GPIOA, GPIO_PIN_5);
-  MPU6050_init();
-  MENU_Init(&hlcd);
-  CONTROL_Init(&hlc1);
+  LC_Init(&hlc1, GPIOA, GPIO_PIN_4, GPIOA, GPIO_PIN_5, 0.000443, -3800.787354, -1.0);
+  LC_Init(&hlc2, GPIOA, GPIO_PIN_6, GPIOA, GPIO_PIN_7, 0.000438, -3865.021729, 0.0);
+  LC_Init(&hlc3, GPIOB, GPIO_PIN_0, GPIOB, GPIO_PIN_1, 0.000433, -3562.769043, -2.0);
+//  LC_Calibration(&hlc1);
+//  LC_Calibration(&hlc2);
+//  LC_Calibration(&hlc3);
+//  MPU6050_init();
+//  MENU_Init(&hlcd);
+  CONTROL_Init(&hlc1, &hlc2, &hlc3);
 
-  // Send command to get WiFi connection
-  HAL_UART_Transmit(&huart2, (uint8_t *)"GET_CONNECTION\n", 15, 500);
-  // Wait for reply
-  HAL_Delay(500);
-  // Handle reply
-  UART_Handle();
-  // Send command to get real time data, the reply will be handled in while loop
-  HAL_UART_Transmit(&huart2, (uint8_t *)"GET_REAL_TIME\n", 14, 500);
+//  // Send command to get WiFi connection
+//  HAL_UART_Transmit(&huart2, (uint8_t *)"GET_CONNECTION\n", 15, 500);
+//  // Wait for reply
+//  HAL_Delay(500);
+//  // Handle reply
+//  UART_Handle();
+//  // Send command to get real time data, the reply will be handled in while loop
+//  HAL_UART_Transmit(&huart2, (uint8_t *)"GET_REAL_TIME\n", 14, 500);
 
   /* USER CODE END 2 */
 
@@ -148,17 +153,25 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	  // Handle keypad signal
-	  KEYPAD_DRIVER_Handle();
+//	  // Handle keypad signal
+//	  KEYPAD_DRIVER_Handle();
+//
+//	  // Handle displaying menus on LCD
+//	  MENU_Handle();
+//
+//	  // Handle command from ESP
+//	  UART_Handle();
+//
+//	  // Handle feeding stage
+//	  CONTROL_Handle();
 
-	  // Handle displaying menus on LCD
-	  MENU_Handle();
-
-	  // Handle command from ESP
-	  UART_Handle();
-
-	  // Handle feeding stage
-	  CONTROL_Handle();
+	  uint8_t t_str[21] = {};
+//	  sprintf((char*)t_str, "%ld\n", get_mass());
+	  sprintf((char*)t_str, "Total mass: %ld g", get_mass());
+	  LCD_Set_Cursor(&hlcd, 0, 0);
+	  LCD_Write(&hlcd, (char*)t_str);
+	  HAL_UART_Transmit(&huart1, t_str, strlen((char*)t_str), 500);
+	  HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }

@@ -5,13 +5,25 @@ extern MPU6050_t mpu;
 
 #define FEEDING_TIMEOUT		60000
 #define MIN_MASS			5
+
 static uint32_t feeding_timeout = 0;
 
-static long get_mass(){
-	return (long)LC_Get_Mass(CONTROL_Data.hlc1);
+
+static float alpha = 1.0;
+static float beta = 1.0;
+static float gamma = 1.0;
+
+long get_mass(){
+	long t_mass_1 = (long)LC_Get_Mass(CONTROL_Data.hlc1);
+	long t_mass_2 = (long)LC_Get_Mass(CONTROL_Data.hlc2);
+	long t_mass_3 = (long)LC_Get_Mass(CONTROL_Data.hlc3);
+	uint8_t t_Tx_Buff[20] = {};
+	sprintf((char*)t_Tx_Buff, "%ld %ld %ld ", t_mass_1, t_mass_2, t_mass_3);
+	HAL_UART_Transmit(&huart1, t_Tx_Buff, strlen((char*)t_Tx_Buff), 500);
+	return (long)(alpha * t_mass_1 + 0 * t_mass_2 + gamma * t_mass_3);
 }
 
-static void waiting(){
+static void wait(){
 	uint16_t t_current_time = CONTROL_Data.hour * 60 + CONTROL_Data.minute;
 	uint16_t t_feeding_time = TIME_Data.flash_data[CONTROL_Data.next_time_index].hour * 60 + TIME_Data.flash_data[CONTROL_Data.next_time_index].minute;
 	if(t_current_time >= t_feeding_time){
@@ -24,7 +36,7 @@ static void waiting(){
 	}
 }
 
-static void feeding(){
+static void feed(){
 	long t_mass = get_mass();
 //	MPU6050_callback(&mpu);
 	long t_feeding_mass = TIME_Data.flash_data[CONTROL_Data.next_time_index].mass;
@@ -63,9 +75,11 @@ static void find_next(){
 	}
 }
 
-void CONTROL_Init(LC_HandleTypeDef *p_hlc){
+void CONTROL_Init(LC_HandleTypeDef *p_hlc1, LC_HandleTypeDef *p_hlc2, LC_HandleTypeDef *p_hlc3){
 	CONTROL_Data.state = FIND_NEXT;
-	CONTROL_Data.hlc1 = p_hlc;
+	CONTROL_Data.hlc1 = p_hlc1;
+	CONTROL_Data.hlc2 = p_hlc2;
+	CONTROL_Data.hlc3 = p_hlc3;
 	SERVO_Init();
 	MOTOR_Init(FORWARD, MAX_CCR_MOTOR_VALUE);
 }
@@ -75,10 +89,10 @@ void CONTROL_Handle(){
 	MOTOR_Handle();
 	switch(CONTROL_Data.state){
 		case WAITING:
-			waiting();
+			wait();
 			break;
 		case FEEDING:
-			feeding();
+			feed();
 			break;
 		case FIND_NEXT:
 			find_next();
