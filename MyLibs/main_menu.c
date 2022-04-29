@@ -60,7 +60,6 @@ void MAIN_MENU_Set_State_Time(uint8_t p_hour, uint8_t p_minute, uint8_t p_day){
 }
 
 void MAIN_MENU_Set_State_WiFi(char **p_arg_value, uint8_t p_arg_num){
-	char t_ssid_str[4] = {};
 	if(p_arg_num == 1){
 		if(strstr(p_arg_value[0], "SMART_CONFIG_RUN") != NULL){
 			MAIN_MENU_Data.WIFI_State = SMART_CONFIG_RUN;
@@ -81,10 +80,6 @@ void MAIN_MENU_Set_State_WiFi(char **p_arg_value, uint8_t p_arg_num){
 	for(int i = 0; i < t_size; i++){
 		if(WIFI_Str[i].index == MAIN_MENU_Data.WIFI_State){
 			strcpy(main_menu_frame[0].str, WIFI_Str[i].value);
-//			if(MAIN_MENU_Data.WIFI_State == WIFI_CONNECTED){
-//				strcat(main_menu_frame[0].str, t_ssid_str);
-//				strcat(main_menu_frame[0].str, "...");
-//			}
 			break;
 		}
 	}

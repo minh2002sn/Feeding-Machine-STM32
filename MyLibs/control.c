@@ -17,10 +17,10 @@ long get_mass(){
 	long t_mass_1 = (long)LC_Get_Mass(CONTROL_Data.hlc1);
 	long t_mass_2 = (long)LC_Get_Mass(CONTROL_Data.hlc2);
 	long t_mass_3 = (long)LC_Get_Mass(CONTROL_Data.hlc3);
-	uint8_t t_Tx_Buff[20] = {};
-	sprintf((char*)t_Tx_Buff, "%ld %ld %ld ", t_mass_1, t_mass_2, t_mass_3);
-	HAL_UART_Transmit(&huart1, t_Tx_Buff, strlen((char*)t_Tx_Buff), 500);
-	return (long)(alpha * t_mass_1 + 0 * t_mass_2 + gamma * t_mass_3);
+//	uint8_t t_Tx_Buff[20] = {};
+//	sprintf((char*)t_Tx_Buff, "%ld %ld %ld ", t_mass_1, t_mass_2, t_mass_3);
+//	HAL_UART_Transmit(&huart1, t_Tx_Buff, strlen((char*)t_Tx_Buff), 500);
+	return (long)(alpha * t_mass_1 + beta * t_mass_2 + gamma * t_mass_3);
 }
 
 static void wait(){
@@ -40,11 +40,11 @@ static void feed(){
 	long t_mass = get_mass();
 //	MPU6050_callback(&mpu);
 	long t_feeding_mass = TIME_Data.flash_data[CONTROL_Data.next_time_index].mass;
-	if(CONTROL_Data.start_mass - t_mass < t_feeding_mass && t_mass > MIN_MASS && HAL_GetTick() - feeding_timeout < FEEDING_TIMEOUT){
+	if(CONTROL_Data.start_mass - t_mass < t_feeding_mass && HAL_GetTick() - feeding_timeout < FEEDING_TIMEOUT){
 		SERVO_Set_State(SERVO_ON);
 		float t_pitch = 0;
 		uint8_t Tx_Buff[50] = {};
-		sprintf((char*)Tx_Buff, "%f %ld\n", t_pitch, t_mass);
+		sprintf((char*)Tx_Buff, "%ld\n", t_mass);
 		HAL_UART_Transmit(&huart1, Tx_Buff, strlen((char*)Tx_Buff), 500);
 		if(t_pitch < 30){
 			MOTOR_Set_State(MOTOR_ON);
