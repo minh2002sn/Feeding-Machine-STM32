@@ -26,14 +26,14 @@ static void waiting(){
 
 static void feeding(){
 	long t_mass = get_mass();
-	MPU6050_callback(&mpu);
+//	MPU6050_callback(&mpu);
 	long t_feeding_mass = TIME_Data.flash_data[CONTROL_Data.next_time_index].mass;
 	if(CONTROL_Data.start_mass - t_mass < t_feeding_mass && t_mass > MIN_MASS && HAL_GetTick() - feeding_timeout < FEEDING_TIMEOUT){
 		SERVO_Set_State(SERVO_ON);
-		float t_pitch = mpu.pitch;
-//		uint8_t Tx_Buff[50] = {};
-//		sprintf((char*)Tx_Buff, "%f %ld\n", pitch, mass);
-//		HAL_UART_Transmit(&huart1, Tx_Buff, strlen((char*)Tx_Buff), 500);
+		float t_pitch = 0;
+		uint8_t Tx_Buff[50] = {};
+		sprintf((char*)Tx_Buff, "%f %ld\n", t_pitch, t_mass);
+		HAL_UART_Transmit(&huart1, Tx_Buff, strlen((char*)Tx_Buff), 500);
 		if(t_pitch < 30){
 			MOTOR_Set_State(MOTOR_ON);
 		} else{
@@ -43,9 +43,9 @@ static void feeding(){
 		SERVO_Set_State(SERVO_OFF);
 		MOTOR_Set_State(MOTOR_OFF);
 		CONTROL_Data.state = FIND_NEXT;
-//		uint8_t Tx_Buff[50] = {};
-//		sprintf((char*)Tx_Buff, "%ld\n", mass);
-//		HAL_UART_Transmit(&huart1, Tx_Buff, strlen((char*)Tx_Buff), 500);
+		uint8_t Tx_Buff[50] = {};
+		sprintf((char*)Tx_Buff, "%ld\n", t_mass);
+		HAL_UART_Transmit(&huart1, Tx_Buff, strlen((char*)Tx_Buff), 500);
 	}
 }
 
@@ -84,13 +84,13 @@ void CONTROL_Handle(){
 			find_next();
 			break;
 	}
-//	static uint32_t timer = 0;
-//	if(HAL_GetTick() - timer >= 2000){
-//		uint8_t Tx_Buff[50] = {};
-//		sprintf((char*)Tx_Buff, "%d %d\n", CONTROL_Data.state, TIME_Data.flash_data[CONTROL_Data.next_time_index].mass);
-//		HAL_UART_Transmit(&huart1, Tx_Buff, strlen((char*)Tx_Buff), 500);
-//		timer = HAL_GetTick();
-//	}
+	static uint32_t t_timer = 0;
+	if(HAL_GetTick() - t_timer >= 2000){
+		uint8_t Tx_Buff[50] = {};
+		sprintf((char*)Tx_Buff, "%d %d\n", CONTROL_Data.state, TIME_Data.flash_data[CONTROL_Data.next_time_index].mass);
+		HAL_UART_Transmit(&huart1, Tx_Buff, strlen((char*)Tx_Buff), 500);
+		t_timer = HAL_GetTick();
+	}
 }
 
 void CONTROL_Recheck_Time(){

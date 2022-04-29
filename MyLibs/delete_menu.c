@@ -1,6 +1,7 @@
 #include "delete_menu.h"
 
 static uint8_t current_index = 0;
+extern FRAME_HandleTypeDef time_list_menu_frame[4];
 
 void DELETE_MENU_Init(){
 
@@ -20,13 +21,15 @@ void DELETE_MENU_Set_State_Delete(){
 void DELETE_MENU_Display(){
 	LCD_Clear(MENU_Data.hlcd);
 	for(int i = 0; i < 3; i++){
-		if(strlen(TL_MENU_Data.list_str[TL_MENU_Data.first_line+i]) != 0){
-			char temp_c[2] = {i + '1', '\0'};
-			LCD_Set_Cursor(MENU_Data.hlcd, 0, i);
-			LCD_Write(MENU_Data.hlcd, TL_MENU_Data.list_str[TL_MENU_Data.first_line+i]);
-			LCD_Set_Cursor(MENU_Data.hlcd, 0, i);
-			LCD_Write(MENU_Data.hlcd, temp_c);
-		}
+		LCD_Set_Cursor(MENU_Data.hlcd, time_list_menu_frame[i].col, time_list_menu_frame[i].row);
+		LCD_Write(MENU_Data.hlcd, time_list_menu_frame[i].str);
+//		if(strlen(TL_MENU_Data.list_str[TL_MENU_Data.first_line+i]) != 0){
+//			char temp_c[2] = {i + '1', '\0'};
+//			LCD_Set_Cursor(MENU_Data.hlcd, 0, i);
+//			LCD_Write(MENU_Data.hlcd, TL_MENU_Data.list_str[TL_MENU_Data.first_line+i]);
+//			LCD_Set_Cursor(MENU_Data.hlcd, 0, i);
+//			LCD_Write(MENU_Data.hlcd, temp_c);
+//		}
 	}
 	LCD_Set_Cursor(MENU_Data.hlcd, 0, 3);
 	LCD_Write(MENU_Data.hlcd, "<[*]       [D]Delete");

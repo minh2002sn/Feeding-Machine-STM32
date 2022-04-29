@@ -31,24 +31,35 @@ void LCD_Init(LCD_I2C_HandleTypeDef *p_lcd, I2C_HandleTypeDef *p_hi2c, uint8_t p
 	HAL_Delay(1);
 	LCD_Send_Command(p_lcd, LCD_DISPLAYCONTROL | p_lcd->LCD_Display_Option); //Display on/off control --> D = 1, C and B = 0. (Cursor and blink, last two bits)
 
-	// Feeding Machine
-	// Version 1.0
-//	char line_1[] = "Feeding Machine";
-//	for(int i = 0; i < strlen((char *)line_1); i++){
-//		char str[2] = {line_1[i], 0};
-//		LCD_Set_Cursor(p_lcd, 2 + i, 1);
-//		LCD_Write(p_lcd, str);
-//		HAL_Delay(150);
-//	}
-//	char line_2[] = "Version 1.0";
-//	for(int i = 0; i < strlen((char *)line_2); i++){
-//		char str[2] = {line_2[i], 0};
-//		LCD_Set_Cursor(p_lcd, 4 + i, 2);
-//		LCD_Write(p_lcd, str);
-//		HAL_Delay(150);
-//	}
-//
-//	HAL_Delay(3000);
+	// Feed X OS
+	uint8_t t_custom_char[8] = {
+			0b11111,
+			0b10101,
+			0b10101,
+			0b11011,
+			0b11011,
+			0b10101,
+			0b10101,
+			0b11111,
+	};
+	LCD_Create_Char(p_lcd, 1, t_custom_char);
+	char t_str_1[] = "Feed ";
+	for(int i = 0; i < strlen((char *)t_str_1); i++){
+		char t_str[2] = {t_str_1[i], 0};
+		LCD_Set_Cursor(p_lcd, 5 + i, 1);
+		LCD_Write(p_lcd, t_str);
+		HAL_Delay(150);
+	}
+	LCD_Write_Custom_Char(p_lcd, 1);
+	char t_str_2[] = " OS";
+	for(int i = 0; i < strlen((char *)t_str_2); i++){
+		char t_str[2] = {t_str_2[i], 0};
+		LCD_Set_Cursor(p_lcd, 11 + i, 1);
+		LCD_Write(p_lcd, t_str);
+		HAL_Delay(150);
+	}
+
+	HAL_Delay(3000);
 
 }
 

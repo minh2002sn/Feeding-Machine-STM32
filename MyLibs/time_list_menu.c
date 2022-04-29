@@ -10,7 +10,7 @@ static dictionary DAY_Str[7] = {
 		{0x40, "7"},
 };
 
-static FRAME_HandleTypeDef time_list_menu_frame[4] = {
+FRAME_HandleTypeDef time_list_menu_frame[4] = {
 		{0, 0, ""},
 		{0, 1, ""},
 		{0, 2, ""},

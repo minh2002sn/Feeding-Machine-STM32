@@ -70,11 +70,8 @@ void MAIN_MENU_Set_State_WiFi(char **p_arg_value, uint8_t p_arg_num){
 			MAIN_MENU_Data.WIFI_State = WIFI_DISCONNECTED;
 		} else if(strstr(p_arg_value[1], "CONNECTING") != NULL){
 			MAIN_MENU_Data.WIFI_State = WIFI_CONNECTING;
-		}
-	} else{
-		if(strstr(p_arg_value[1], "CONNECTED") != NULL){
+		} else if(strstr(p_arg_value[1], "CONNECTED") != NULL){
 			MAIN_MENU_Data.WIFI_State = WIFI_CONNECTED;
-			strncpy(t_ssid_str, p_arg_value[2], (strlen(p_arg_value[2]) >= 3) ? 3 : strlen(p_arg_value[2]));
 		}
 	}
 	if(MENU_Data.state == MAIN_MENU){
@@ -84,10 +81,10 @@ void MAIN_MENU_Set_State_WiFi(char **p_arg_value, uint8_t p_arg_num){
 	for(int i = 0; i < t_size; i++){
 		if(WIFI_Str[i].index == MAIN_MENU_Data.WIFI_State){
 			strcpy(main_menu_frame[0].str, WIFI_Str[i].value);
-			if(MAIN_MENU_Data.WIFI_State == WIFI_CONNECTED){
-				strcat(main_menu_frame[0].str, t_ssid_str);
-				strcat(main_menu_frame[0].str, "...");
-			}
+//			if(MAIN_MENU_Data.WIFI_State == WIFI_CONNECTED){
+//				strcat(main_menu_frame[0].str, t_ssid_str);
+//				strcat(main_menu_frame[0].str, "...");
+//			}
 			break;
 		}
 	}
