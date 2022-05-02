@@ -16,7 +16,7 @@ static dictionary DAY_Str[7] = {
 // WiFi state strings display on LCD
 dictionary WIFI_Str[4] = {
 		{WIFI_DISCONNECTED, "WF!!!"},
-		{WIFI_CONNECTED, "WF:"},
+		{WIFI_CONNECTED, "WF"},
 		{WIFI_CONNECTING, "WF..."},
 		{SMART_CONFIG_RUN, "SM..."},
 };

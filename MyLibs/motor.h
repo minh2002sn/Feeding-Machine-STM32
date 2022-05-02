@@ -4,8 +4,8 @@
 #include "stm32f1xx_hal.h"
 #include "stdint.h"
 
-#define MIN_CCR_MOTOR_VALUE 0
-#define MAX_CCR_MOTOR_VALUE 200
+#define MIN_PWM_VALUE 0
+#define MAX_PWM_VALUE 200
 
 typedef enum{
 	BACKWARD,
@@ -18,13 +18,13 @@ typedef enum{
 }MOTOR_STATE_HandleTypdeDef;
 
 typedef struct{
-	uint8_t ccr_run_value;
+	uint8_t run_pwm_value;
 	MOTOR_MOVE_HandleTypeDef move;
 	MOTOR_STATE_HandleTypdeDef state;
 }MOTOR_DATA_HandleTypeDef;
 
-void MOTOR_Init(MOTOR_MOVE_HandleTypeDef p_move, uint8_t p_ccr_run_value);
-void MOTOR_Set_State(MOTOR_STATE_HandleTypdeDef p_state);
+void MOTOR_Init(MOTOR_MOVE_HandleTypeDef p_move);
+void MOTOR_Set_State(MOTOR_STATE_HandleTypdeDef p_state, uint8_t p_run_pwm_value);
 void MOTOR_Handle();
 
 MOTOR_DATA_HandleTypeDef MOTOR_Data;

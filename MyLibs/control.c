@@ -43,21 +43,21 @@ static void feed(){
 	if(CONTROL_Data.start_mass - t_mass < t_feeding_mass && HAL_GetTick() - feeding_timeout < FEEDING_TIMEOUT){
 		SERVO_Set_State(SERVO_ON);
 		float t_pitch = 0;
-		uint8_t Tx_Buff[50] = {};
-		sprintf((char*)Tx_Buff, "%ld\n", t_mass);
-		HAL_UART_Transmit(&huart1, Tx_Buff, strlen((char*)Tx_Buff), 500);
+//		uint8_t Tx_Buff[50] = {};
+//		sprintf((char*)Tx_Buff, "%ld\n", t_mass);
+//		HAL_UART_Transmit(&huart1, Tx_Buff, strlen((char*)Tx_Buff), 500);
 		if(t_pitch < 30){
-			MOTOR_Set_State(MOTOR_ON);
+			MOTOR_Set_State(MOTOR_ON, MAX_PWM_VALUE);
 		} else{
-			MOTOR_Set_State(MOTOR_OFF);
+			MOTOR_Set_State(MOTOR_OFF, MIN_PWM_VALUE);
 		}
 	} else{
 		SERVO_Set_State(SERVO_OFF);
-		MOTOR_Set_State(MOTOR_OFF);
+		MOTOR_Set_State(MOTOR_OFF, MIN_PWM_VALUE);
 		CONTROL_Data.state = FIND_NEXT;
-		uint8_t Tx_Buff[50] = {};
-		sprintf((char*)Tx_Buff, "%ld\n", t_mass);
-		HAL_UART_Transmit(&huart1, Tx_Buff, strlen((char*)Tx_Buff), 500);
+//		uint8_t Tx_Buff[50] = {};
+//		sprintf((char*)Tx_Buff, "%ld\n", t_mass);
+//		HAL_UART_Transmit(&huart1, Tx_Buff, strlen((char*)Tx_Buff), 500);
 	}
 }
 
@@ -81,7 +81,7 @@ void CONTROL_Init(LC_HandleTypeDef *p_hlc1, LC_HandleTypeDef *p_hlc2, LC_HandleT
 	CONTROL_Data.hlc2 = p_hlc2;
 	CONTROL_Data.hlc3 = p_hlc3;
 	SERVO_Init();
-	MOTOR_Init(FORWARD, MAX_CCR_MOTOR_VALUE);
+	MOTOR_Init(FORWARD);
 }
 
 void CONTROL_Handle(){
@@ -98,19 +98,19 @@ void CONTROL_Handle(){
 			find_next();
 			break;
 	}
-	static uint32_t t_timer = 0;
-	if(HAL_GetTick() - t_timer >= 2000){
-		uint8_t Tx_Buff[50] = {};
-		sprintf((char*)Tx_Buff, "%d %d\n", CONTROL_Data.state, TIME_Data.flash_data[CONTROL_Data.next_time_index].mass);
-		HAL_UART_Transmit(&huart1, Tx_Buff, strlen((char*)Tx_Buff), 500);
-		t_timer = HAL_GetTick();
-	}
+//	static uint32_t t_timer = 0;
+//	if(HAL_GetTick() - t_timer >= 2000){
+//		uint8_t Tx_Buff[50] = {};
+//		sprintf((char*)Tx_Buff, "%d %d\n", CONTROL_Data.state, TIME_Data.flash_data[CONTROL_Data.next_time_index].mass);
+//		HAL_UART_Transmit(&huart1, Tx_Buff, strlen((char*)Tx_Buff), 500);
+//		t_timer = HAL_GetTick();
+//	}
 }
 
 void CONTROL_Recheck_Time(){
 	if(CONTROL_Data.state == FEEDING){
 		SERVO_Set_State(SERVO_OFF);
-		MOTOR_Set_State(MOTOR_OFF);
+		MOTOR_Set_State(MOTOR_OFF, MIN_PWM_VALUE);
 	}
 	CONTROL_Data.state = FIND_NEXT;
 }

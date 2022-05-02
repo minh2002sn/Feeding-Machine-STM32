@@ -124,9 +124,9 @@ int main(void)
 
   HAL_UART_Receive_IT(&huart2, &Rx_Buffer, 1);
   LCD_Init(&hlcd, &hi2c2, 20, 4, 0x4E);
-  LC_Init(&hlc1, GPIOA, GPIO_PIN_4, GPIOA, GPIO_PIN_5, 0.001230, -10421.469727, 7.0);
-  LC_Init(&hlc2, GPIOA, GPIO_PIN_6, GPIOA, GPIO_PIN_7, 0.000488, -4285.462402, 3.0);
-  LC_Init(&hlc3, GPIOB, GPIO_PIN_0, GPIOB, GPIO_PIN_1, 0.000491, -4053.920166, 0.0);
+  LC_Init(&hlc1, GPIOA, GPIO_PIN_4, GPIOA, GPIO_PIN_5, 0.001045, -8832.797852, -3.0);
+  LC_Init(&hlc2, GPIOA, GPIO_PIN_6, GPIOA, GPIO_PIN_7, 0.000448, -3946.319824, 0.0);
+  LC_Init(&hlc3, GPIOB, GPIO_PIN_0, GPIOB, GPIO_PIN_1, 0.000454, -3741.224365, 0.0);
 //  LC_Calibration(&hlc1);
 //  LC_Calibration(&hlc2);
 //  LC_Calibration(&hlc3);
@@ -166,10 +166,10 @@ int main(void)
 	  CONTROL_Handle();
 
 //	  uint8_t t_str[21] = {};
-////	  sprintf((char*)t_str, "%ld\n", get_mass());
-//	  sprintf((char*)t_str, "Total mass: %ld g\n", get_mass());
-//	  LCD_Set_Cursor(&hlcd, 0, 0);
-//	  LCD_Write(&hlcd, (char*)t_str);
+//	  sprintf((char*)t_str, "%ld\n", get_mass());
+////	  sprintf((char*)t_str, "Total mass: %ld g", get_mass());
+////	  LCD_Set_Cursor(&hlcd, 0, 0);
+////	  LCD_Write(&hlcd, (char*)t_str);
 //	  HAL_UART_Transmit(&huart1, t_str, strlen((char*)t_str), 500);
 //	  HAL_Delay(1000);
   }
