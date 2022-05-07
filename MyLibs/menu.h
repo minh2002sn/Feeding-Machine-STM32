@@ -6,6 +6,8 @@
 #include "time_list_menu.h"
 #include "set_time_menu.h"
 #include "delete_menu.h"
+#include "wifi_list_menu.h"
+#include "type_pass_menu.h"
 #include "dictionary.h"
 
 typedef enum{
@@ -14,6 +16,9 @@ typedef enum{
 	SET_TIME_MENU,
 	DELETE_TIME_MENU,
 	SMART_CONFIG_MENU,
+	WIFI_SCANNING_MENU,
+	WIFI_LIST_MENU,
+	TYPE_PASS_MENU,
 	CALIB_MENU,
 }MENU_STATE_HandleTypeDef;
 
@@ -27,6 +32,8 @@ void MENU_Init(LCD_I2C_HandleTypeDef *p_hlcd);
 void MENU_Handle();
 void SM_MENU_Set_State();
 void SM_MENU_Display();
+void WS_MENU_Set_State();
+void WS_MENU_Display();
 
 MENU_DATA_HandleTypeDef MENU_Data;
 

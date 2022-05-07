@@ -27,7 +27,7 @@ static FRAME_HandleTypeDef main_menu_frame[5] = {
 		{11, 0, "SUN 00:00"},
 		{0, 1, "1.Set feeding time"},
 		{0, 2, "2.Smart Config"},
-		{2, 3, "Press [1] or [2]"},
+		{0, 3, "3.Connect wifi"},
 };
 
 void MAIN_MENU_Init(){

@@ -10,13 +10,17 @@ void KeypadPressingCallback(uint8_t p_key){
 				TL_MENU_Set_State(0);
 			} else if(p_key == '2'){
 				SM_MENU_Set_State();	// This function is in menu.c
+			} else if(p_key == '3'){
+				uint8_t t_Tx_Buffer[] = "GET_NETWORKS\n";
+				HAL_UART_Transmit(&huart2, t_Tx_Buffer, 13, 500);
+				WS_MENU_Set_State();	// This function is in menu.c
 			}
 			break;
 		case TIME_LIST_MENU:
 			if(p_key >= '1' && p_key <= '3'){
 				if((TL_MENU_Data.first_line + p_key - '1') == TIME_Data.len){
 					ST_MENU_Set_State();
-				} else if ((p_key - '1') < TIME_Data.len){
+				} else if((TL_MENU_Data.first_line + p_key - '1') < TIME_Data.len){
 					DELETE_MENU_Set_State(TL_MENU_Data.first_line + p_key - '1');
 				}
 			} else if(p_key == '*'){
@@ -55,11 +59,64 @@ void KeypadPressingCallback(uint8_t p_key){
 			} else if(p_key == '*'){
 				MAIN_MENU_Set_State();
 			}
+			break;
+		case WIFI_SCANNING_MENU:
+			break;
+		case WIFI_LIST_MENU:
+			if(p_key == '#'){
+				if(WL_MENU_Data.first_line == 0){
+					WL_MENU_Set_State(3);
+				}
+			} else if(p_key == '*'){
+				if(WL_MENU_Data.first_line == 3){
+					WL_MENU_Set_State(0);
+				} else if(WL_MENU_Data.first_line == 0){
+					MAIN_MENU_Set_State();
+				}
+			} else if(p_key >= '1' && p_key <= '3'){
+				if(WL_MENU_Data.first_line + p_key - '1' < WL_MENU_Data.num_of_wifi){
+					TP_MENU_Set_State(WL_MENU_Data.first_line + p_key - '1');
+				}
+			}
+			break;
+		case TYPE_PASS_MENU:
+			break;
 		default:
 			break;
 	}
 //	uint8_t Tx_Buff[2] = {p_key, '\n'};
 //	HAL_UART_Transmit(&huart1, Tx_Buff, 2, 500);
+}
+
+void KeypadPressedShortCallback(uint8_t p_key){
+	switch(MENU_Data.state){
+		case TYPE_PASS_MENU:
+			if(p_key != '*' && p_key != '#'){
+				TP_MENU_Set_State_NumKey(p_key);
+			} else{
+				TP_MENU_Set_State_SigKey(p_key);
+			}
+			break;
+		default:
+			break;
+	}
+}
+
+void KeypadPressingTimeoutCallback(uint8_t p_key){
+	switch(MENU_Data.state){
+		case TYPE_PASS_MENU:
+			if(p_key >= '2' && p_key <= '9'){
+				TP_MENU_Set_State_Upper(p_key);
+			} else if(p_key == '#'){
+				TP_MENU_Done_Type_Pass();
+				MAIN_MENU_Set_State();
+			} else if(p_key == '*'){
+				WL_MENU_Set_State(0);
+			}
+			break;
+		default:
+			break;
+	}
 }
 
 void KEYPAD_DRIVER_Handle(){

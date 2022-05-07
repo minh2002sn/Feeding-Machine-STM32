@@ -1,5 +1,7 @@
 #include "menu.h"
 
+#define SCANNING_TIMEOUT 20000
+
 void MENU_Init(LCD_I2C_HandleTypeDef *p_hlcd){
 	MENU_Data.changed = 0;
 	MENU_Data.hlcd = p_hlcd;
@@ -7,9 +9,11 @@ void MENU_Init(LCD_I2C_HandleTypeDef *p_hlcd){
 	MAIN_MENU_Init();
 	TL_MENU_Init();
 	ST_MENU_Init();
+	WL_MENU_Init();
 }
 
 void MENU_Handle(){
+	static uint32_t t_scanning_timer = 0;
 	if(!MENU_Data.changed){
 		switch(MENU_Data.state){
 			case MAIN_MENU:
@@ -42,9 +46,31 @@ void MENU_Handle(){
 				SM_MENU_Display();	// This function is in menu.c
 				MENU_Data.changed = 1;
 				break;
+			case WIFI_SCANNING_MENU:
+				LCD_Backlight(MENU_Data.hlcd);
+				LCD_Cursor_No_Blink(MENU_Data.hlcd);
+				WS_MENU_Display();	// This function is in menu.c
+				MENU_Data.changed = 1;
+				t_scanning_timer = HAL_GetTick();
+				break;
+			case WIFI_LIST_MENU:
+				LCD_Backlight(MENU_Data.hlcd);
+				LCD_Cursor_No_Blink(MENU_Data.hlcd);
+				WL_MENU_Display();
+				MENU_Data.changed = 1;
+				break;
+			case TYPE_PASS_MENU:
+				LCD_Backlight(MENU_Data.hlcd);
+				LCD_Cursor_Blink(MENU_Data.hlcd);
+				TP_MENU_Display();
+				MENU_Data.changed = 1;
+				break;
 			default:
 				break;
 		}
+	}
+	if(MENU_Data.state == WIFI_SCANNING_MENU && HAL_GetTick() - t_scanning_timer > SCANNING_TIMEOUT){
+		MAIN_MENU_Set_State();
 	}
 }
 
@@ -61,4 +87,15 @@ void SM_MENU_Display(){
 	LCD_Write(MENU_Data.hlcd, "Smart Config");
 	LCD_Set_Cursor(MENU_Data.hlcd, 0, 3);
 	LCD_Write(MENU_Data.hlcd, "<[*]");
+}
+
+void WS_MENU_Set_State(){
+	MENU_Data.state = WIFI_SCANNING_MENU;
+	MENU_Data.changed = 0;
+}
+
+void WS_MENU_Display(){
+	LCD_Clear(MENU_Data.hlcd);
+	LCD_Set_Cursor(MENU_Data.hlcd, 4, 1);
+	LCD_Write(MENU_Data.hlcd, "Scanning...");
 }
