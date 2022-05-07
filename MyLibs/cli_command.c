@@ -11,7 +11,7 @@ void CLI_Execute(char *p_uart_buffer, uint8_t p_len){
 //	HAL_UART_Transmit(&huart2, (uint8_t*)"0\n", 2, 500);
 	if(MENU_Data.state == WIFI_SCANNING_MENU){
 		if(WL_MENU_Is_Enable_Receiving_SSID() == 1 && WL_MENU_Data.num_of_wifi < 6 && strstr(p_uart_buffer, "SSID_START") == NULL && strstr(p_uart_buffer, "SSID_END") == NULL){
-			strncpy(WL_MENU_Data.wifi_list[WL_MENU_Data.num_of_wifi++], p_uart_buffer, ((p_len > 18) ? 18 : p_len));
+			strncpy(WL_MENU_Data.wifi_list[WL_MENU_Data.num_of_wifi++], p_uart_buffer, ((p_len > 18) ? 18 : p_len) + 1);
 		}
 		HAL_UART_Transmit(&huart2, (uint8_t*)RESPONE_STR, strlen(RESPONE_STR), 500);
 	}

@@ -38,7 +38,7 @@ void TP_MENU_Set_State(uint8_t p_ssid_index){
 	last_key = '1';
 	char t_ssid_str[21] = {};
 	strcpy(t_ssid_str, WL_MENU_Data.wifi_list[TP_MENU_Data.ssid_index]);
-	strncpy(ssid_frame.str, t_ssid_str, ((strlen(t_ssid_str) > 14) ? 14 : strlen(t_ssid_str)));
+	strncpy(ssid_frame.str, t_ssid_str, ((strlen(t_ssid_str) > 14) ? 14 : strlen(t_ssid_str)) + 1);
 }
 
 void TP_MENU_Set_State_NumKey(uint8_t p_key){
