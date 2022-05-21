@@ -4,9 +4,9 @@
 #define KALMAN_FILTER
 
 #include "LCD_I2C.h"
-#include "frame.h"
-#include "menu.h"
-#include "dictionary.h"
+#include <frame.h>
+#include <menu.h>
+#include <dictionary.h>
 
 typedef enum{
 	WIFI_DISCONNECTED,

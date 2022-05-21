@@ -26,7 +26,7 @@ long get_mass(){
 static void wait(){
 	uint16_t t_current_time = CONTROL_Data.hour * 60 + CONTROL_Data.minute;
 	uint16_t t_feeding_time = TIME_Data.flash_data[CONTROL_Data.next_time_index].hour * 60 + TIME_Data.flash_data[CONTROL_Data.next_time_index].minute;
-	if(t_current_time >= t_feeding_time){
+	if(t_current_time >= t_feeding_time && t_current_time - t_feeding_time <= 1){
 		CONTROL_Data.start_mass = get_mass();
 		CONTROL_Data.state = FEEDING;
 		feeding_timeout = HAL_GetTick();
@@ -71,6 +71,9 @@ static void find_next(){
 				CONTROL_Data.state = WAITING;
 				return;
 			}
+//			uint8_t Tx_Buff[50] = {};
+//			sprintf((char*)Tx_Buff, "%d %d\n", t_current_time, t_feeding_time);
+//			HAL_UART_Transmit(&huart1, Tx_Buff, strlen((char*)Tx_Buff), 500);
 		}
 	}
 }
@@ -81,7 +84,9 @@ void CONTROL_Init(LC_HandleTypeDef *p_hlc1, LC_HandleTypeDef *p_hlc2, LC_HandleT
 	CONTROL_Data.hlc2 = p_hlc2;
 	CONTROL_Data.hlc3 = p_hlc3;
 	SERVO_Init();
+	SERVO_Set_State(SERVO_OFF);
 	MOTOR_Init(FORWARD);
+	MOTOR_Set_State(MOTOR_OFF, MIN_PWM_VALUE);
 }
 
 void CONTROL_Handle(){
@@ -98,13 +103,13 @@ void CONTROL_Handle(){
 			find_next();
 			break;
 	}
-//	static uint32_t t_timer = 0;
-//	if(HAL_GetTick() - t_timer >= 2000){
-//		uint8_t Tx_Buff[50] = {};
-//		sprintf((char*)Tx_Buff, "%d %d\n", CONTROL_Data.state, TIME_Data.flash_data[CONTROL_Data.next_time_index].mass);
-//		HAL_UART_Transmit(&huart1, Tx_Buff, strlen((char*)Tx_Buff), 500);
-//		t_timer = HAL_GetTick();
-//	}
+	static uint32_t t_timer = 0;
+	if(HAL_GetTick() - t_timer >= 2000){
+		uint8_t Tx_Buff[50] = {};
+		sprintf((char*)Tx_Buff, "%d %d %d\n", CONTROL_Data.state, CONTROL_Data.hour, TIME_Data.flash_data[CONTROL_Data.next_time_index].hour);
+		HAL_UART_Transmit(&huart1, Tx_Buff, strlen((char*)Tx_Buff), 500);
+		t_timer = HAL_GetTick();
+	}
 }
 
 void CONTROL_Recheck_Time(){

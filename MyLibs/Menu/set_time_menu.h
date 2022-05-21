@@ -1,12 +1,12 @@
 #ifndef SET_TIME_MENU_H
 #define SET_TIME_MENU_H
 
-#include "frame.h"
-#include "dictionary.h"
-#include "menu.h"
+#include <dictionary.h>
+#include <frame.h>
+#include <menu.h>
+#include <time_list_menu.h>
+#include <time_manage.h>
 #include "LCD_I2C.h"
-#include "time_manage.h"
-#include "time_list_menu.h"
 
 typedef enum{
 	HOUR_TYPE,

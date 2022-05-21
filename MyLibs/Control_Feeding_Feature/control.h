@@ -1,11 +1,11 @@
 #ifndef FEEDING_CONTROL_H
 #define FEEDING_CONTROL_H
 
+#include <time_manage.h>
 #include "loadcell.h"
 #include "motor.h"
 #include "servo.h"
 #include "mpu6050.h"
-#include "time_manage.h"
 #include "stdint.h"
 #include "string.h"
 #include "stm32f1xx_hal.h"

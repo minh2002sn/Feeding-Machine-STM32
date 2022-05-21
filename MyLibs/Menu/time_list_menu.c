@@ -1,4 +1,4 @@
-#include "time_list_menu.h"
+#include <time_list_menu.h>
 
 static dictionary DAY_Str[7] = {
 		{0x01, "C"},

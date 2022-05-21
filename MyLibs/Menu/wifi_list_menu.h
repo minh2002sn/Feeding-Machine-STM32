@@ -1,9 +1,9 @@
 #ifndef WIFI_LIST_H
 #define WIFI_LIST_H
 
+#include <frame.h>
+#include <menu.h>
 #include "LCD_I2C.h"
-#include "frame.h"
-#include "menu.h"
 
 typedef struct{
 	uint8_t first_line;

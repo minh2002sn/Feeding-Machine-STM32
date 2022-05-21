@@ -4,9 +4,9 @@
 #define MAX_PASS_LEN 50
 
 #include "LCD_I2C.h"
-#include "frame.h"
-#include "menu.h"
-#include "wifi_list_menu.h"
+#include <frame.h>
+#include <menu.h>
+#include <wifi_list_menu.h>
 
 typedef struct{
 	uint8_t ssid_index;

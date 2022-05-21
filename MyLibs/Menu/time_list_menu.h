@@ -1,11 +1,11 @@
 #ifndef TIME_LIST_MENU_H
 #define TIME_LIST_MENU_H
 
+#include <dictionary.h>
+#include <frame.h>
+#include <menu.h>
+#include <time_manage.h>
 #include "LCD_I2C.h"
-#include "frame.h"
-#include "menu.h"
-#include "time_manage.h"
-#include "dictionary.h"
 
 #define NUMBER_OF_CHOICE (MAX_OPTIONS + 1)
 

@@ -1,4 +1,4 @@
-#include "menu.h"
+#include <menu.h>
 
 #define SCANNING_TIMEOUT 20000
 
@@ -10,6 +10,7 @@ void MENU_Init(LCD_I2C_HandleTypeDef *p_hlcd){
 	TL_MENU_Init();
 	ST_MENU_Init();
 	WL_MENU_Init();
+	TP_MENU_Init();
 }
 
 void MENU_Handle(){

@@ -1,14 +1,14 @@
 #ifndef MENU_H
 #define MENU_H
 
+#include <delete_menu.h>
+#include <dictionary.h>
+#include <main_menu.h>
+#include <set_time_menu.h>
+#include <time_list_menu.h>
+#include <type_pass_menu.h>
+#include <wifi_list_menu.h>
 #include "LCD_I2C.h"
-#include "main_menu.h"
-#include "time_list_menu.h"
-#include "set_time_menu.h"
-#include "delete_menu.h"
-#include "wifi_list_menu.h"
-#include "type_pass_menu.h"
-#include "dictionary.h"
 
 typedef enum{
 	MAIN_MENU,
