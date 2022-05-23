@@ -12,10 +12,15 @@
 #include "stdio.h"
 
 typedef enum{
+	WAITING_FOOD,
+	THROWING_FOOD,
+} FEEDING_STATE_HandleTypeDef;
+
+typedef enum{
 	WAITING,
 	FEEDING,
-	FIND_NEXT,
-} FEEDING_STATE_HandleTypeDef;
+	FINDING_NEXT,
+} CONTROL_STATE_HandleTypeDef;
 
 typedef struct{
 	uint8_t next_time_index;
@@ -23,7 +28,9 @@ typedef struct{
 	uint8_t hour;
 	uint8_t minute;
 	uint8_t day;
-	FEEDING_STATE_HandleTypeDef state;
+	CONTROL_STATE_HandleTypeDef state;
+	FEEDING_STATE_HandleTypeDef feeding_state;
+	uint8_t feeding_level;
 	LC_HandleTypeDef *hlc1;
 	LC_HandleTypeDef *hlc2;
 	LC_HandleTypeDef *hlc3;

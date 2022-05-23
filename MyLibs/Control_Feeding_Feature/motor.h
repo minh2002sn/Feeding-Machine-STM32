@@ -4,7 +4,8 @@
 #include "stm32f1xx_hal.h"
 #include "stdint.h"
 
-#define MIN_PWM_VALUE 0
+#define STOP_PWM_VALUE 0
+#define MIN_PWM_VALUE 50
 #define MAX_PWM_VALUE 200
 
 typedef enum{
@@ -24,7 +25,8 @@ typedef struct{
 }MOTOR_DATA_HandleTypeDef;
 
 void MOTOR_Init(MOTOR_MOVE_HandleTypeDef p_move);
-void MOTOR_Set_State(MOTOR_STATE_HandleTypdeDef p_state, uint8_t p_run_pwm_value);
+void MOTOR_Set_State(MOTOR_STATE_HandleTypdeDef p_state);
+void MOTOR_Set_PWM(uint8_t p_run_pwm_value);
 void MOTOR_Handle();
 
 MOTOR_DATA_HandleTypeDef MOTOR_Data;
