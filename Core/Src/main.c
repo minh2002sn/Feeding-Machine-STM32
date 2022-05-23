@@ -124,9 +124,9 @@ int main(void)
 
   HAL_UART_Receive_IT(&huart2, &Rx_Buffer, 1);
   LCD_Init(&hlcd, &hi2c2, 20, 4, 0x4E);
-  LC_Init(&hlc1, GPIOA, GPIO_PIN_4, GPIOA, GPIO_PIN_5, 0.001045, -8832.797852, -3.0);
-  LC_Init(&hlc2, GPIOA, GPIO_PIN_6, GPIOA, GPIO_PIN_7, 0.000448, -3946.319824, -5.0);
-  LC_Init(&hlc3, GPIOB, GPIO_PIN_0, GPIOB, GPIO_PIN_1, 0.000454, -3741.224365, 0.0);
+  LC_Init(&hlc1, GPIOA, GPIO_PIN_4, GPIOA, GPIO_PIN_5, 0.001045, -8832.797852, -2.0);
+  LC_Init(&hlc2, GPIOA, GPIO_PIN_6, GPIOA, GPIO_PIN_7, 0.000448, -3946.319824, -4.0);
+  LC_Init(&hlc3, GPIOB, GPIO_PIN_0, GPIOB, GPIO_PIN_1, 0.000440, -3618.708496, -3.0);
 //  LC_Calibration(&hlc1);
 //  LC_Calibration(&hlc2);
 //  LC_Calibration(&hlc3);

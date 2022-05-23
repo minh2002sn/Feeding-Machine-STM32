@@ -8,9 +8,9 @@ void KeypadPressingCallback(uint8_t p_key){
 		case MAIN_MENU:
 			if(p_key == '1'){
 				TL_MENU_Set_State(0);
+//			} else if(p_key == '2'){
+//				SM_MENU_Set_State();	// This function is in menu.c
 			} else if(p_key == '2'){
-				SM_MENU_Set_State();	// This function is in menu.c
-			} else if(p_key == '3'){
 				uint8_t t_Tx_Buffer[] = "GET_NETWORKS\n";
 				HAL_UART_Transmit(&huart2, t_Tx_Buffer, 13, 500);
 				WS_MENU_Set_State();	// This function is in menu.c
@@ -51,15 +51,15 @@ void KeypadPressingCallback(uint8_t p_key){
 				TL_MENU_Set_State(TL_MENU_Data.first_line);
 			}
 			break;
-		case SMART_CONFIG_MENU:
-			if(p_key == '#'){
-				uint8_t Tx_Buff[] = "SMART_CONFIG\n";
-				HAL_UART_Transmit(&huart2, Tx_Buff, 13, 500);
-				MAIN_MENU_Set_State();
-			} else if(p_key == '*'){
-				MAIN_MENU_Set_State();
-			}
-			break;
+//		case SMART_CONFIG_MENU:
+//			if(p_key == '#'){
+//				uint8_t Tx_Buff[] = "SMART_CONFIG\n";
+//				HAL_UART_Transmit(&huart2, Tx_Buff, 13, 500);
+//				MAIN_MENU_Set_State();
+//			} else if(p_key == '*'){
+//				MAIN_MENU_Set_State();
+//			}
+//			break;
 		case WIFI_SCANNING_MENU:
 			break;
 		case WIFI_LIST_MENU:

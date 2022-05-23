@@ -125,7 +125,7 @@ void CONTROL_Handle(){
 //	static uint32_t t_timer = 0;
 //	if(HAL_GetTick() - t_timer >= 2000){
 //		uint8_t Tx_Buff[50] = {};
-//		sprintf((char*)Tx_Buff, "%d %d %d\n", CONTROL_Data.state, CONTROL_Data.hour, TIME_Data.flash_data[CONTROL_Data.next_time_index].hour);
+//		sprintf((char*)Tx_Buff, "%d %d %d\n", CONTROL_Data.state, CONTROL_Data.day, TIME_Data.flash_data[CONTROL_Data.next_time_index].day);
 //		HAL_UART_Transmit(&huart1, Tx_Buff, strlen((char*)Tx_Buff), 500);
 //		t_timer = HAL_GetTick();
 //	}

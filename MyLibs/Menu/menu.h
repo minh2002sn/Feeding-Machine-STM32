@@ -30,8 +30,8 @@ typedef struct{
 
 void MENU_Init(LCD_I2C_HandleTypeDef *p_hlcd);
 void MENU_Handle();
-void SM_MENU_Set_State();
-void SM_MENU_Display();
+//void SM_MENU_Set_State();
+//void SM_MENU_Display();
 void WS_MENU_Set_State();
 void WS_MENU_Display();
 
