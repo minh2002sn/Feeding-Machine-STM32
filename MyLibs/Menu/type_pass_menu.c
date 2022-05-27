@@ -3,9 +3,9 @@
 extern UART_HandleTypeDef huart2;
 
 static char key_map[4][4][9] = {
-		{"1.,?!",	"2abc",		"3def",		"A`@#$%^"},	// Error with '~' and '%' characters
+		{"1.,?!",	"2abc",		"3def",		"A~`@#$%^"},
 		{"4ghi", 	"5jkl",		"6mno",		"B&*()-_+"},
-		{"7pqrs",	"8tuv",		"9wsyz",	"C=[]{}|"},		// Error with '\' character
+		{"7pqrs",	"8tuv",		"9wxyz",	"C=[]{}|\\"},
 		{"",		"0",		"",			"D:;\"'<>/"},
 };
 static char last_key = '1';
@@ -72,6 +72,7 @@ void TP_MENU_Set_State_SigKey(uint8_t p_key){
 	} else if(p_key == '#'){
 		if(TP_MENU_Data.pass_digit < MAX_PASS_LEN && TP_MENU_Data.pass[TP_MENU_Data.pass_digit] != 0){
 			TP_MENU_Data.pass_digit++;
+			TP_MENU_Data.pass[TP_MENU_Data.pass_digit] = ' ';
 			key_index = 7;
 		}
 	}
@@ -101,6 +102,7 @@ void TP_MENU_Done_Type_Pass(){
 
 void TP_MENU_Display(){
 	LCD_Clear(MENU_Data.hlcd);
+	LCD_Cursor_Blink(MENU_Data.hlcd);
 	for(int i = 0; i < 3; i++){
 		LCD_Set_Cursor(MENU_Data.hlcd, type_pass_menu_frame[i].col, type_pass_menu_frame[i].row);
 		LCD_Write(MENU_Data.hlcd, type_pass_menu_frame[i].str);
@@ -108,6 +110,15 @@ void TP_MENU_Display(){
 	LCD_Set_Cursor(MENU_Data.hlcd, ssid_frame.col, ssid_frame.row);
 	LCD_Write(MENU_Data.hlcd, ssid_frame.str);
 	LCD_Set_Cursor(MENU_Data.hlcd, pass_frame.col, pass_frame.row);
-	LCD_Write(MENU_Data.hlcd, pass_frame.str);
-	LCD_Set_Cursor(MENU_Data.hlcd, pass_frame.col + TP_MENU_Data.pass_digit, pass_frame.row);
+
+	if(TP_MENU_Data.pass_digit < 14){
+		LCD_Write_String(MENU_Data.hlcd, pass_frame.str);
+		LCD_Set_Cursor(MENU_Data.hlcd, pass_frame.col + TP_MENU_Data.pass_digit, pass_frame.row);
+	} else{
+		char t_pass_str[14] = "";
+		strncpy(t_pass_str, pass_frame.str + (TP_MENU_Data.pass_digit - 13), TP_MENU_Data.pass_digit + 2);
+		LCD_Write_String(MENU_Data.hlcd, t_pass_str);
+		LCD_Set_Cursor(MENU_Data.hlcd, 19, pass_frame.row);
+	}
+
 }

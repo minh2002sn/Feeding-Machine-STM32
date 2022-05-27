@@ -31,6 +31,31 @@ void LCD_Init(LCD_I2C_HandleTypeDef *p_lcd, I2C_HandleTypeDef *p_hi2c, uint8_t p
 	HAL_Delay(1);
 	LCD_Send_Command(p_lcd, LCD_DISPLAYCONTROL | p_lcd->LCD_Display_Option); //Display on/off control --> D = 1, C and B = 0. (Cursor and blink, last two bits)
 
+	// Create custom char
+	uint8_t t_line_char[8] = {
+			0b00000,
+			0b10000,
+			0b01000,
+			0b00100,
+			0b00010,
+			0b00001,
+			0b00000,
+			0b00000,
+	};
+	LCD_Create_Char(p_lcd, 1, t_line_char);
+
+	uint8_t t_tilde_char[8] = {
+			0b00000,
+			0b00000,
+			0b00000,
+			0b01001,
+			0b10110,
+			0b00000,
+			0b00000,
+			0b00000,
+	};
+	LCD_Create_Char(p_lcd, 2, t_tilde_char);
+
 	// Feed X OS
 	uint8_t t_custom_char[8] = {
 			0b11111,
@@ -42,7 +67,7 @@ void LCD_Init(LCD_I2C_HandleTypeDef *p_lcd, I2C_HandleTypeDef *p_hi2c, uint8_t p
 			0b10101,
 			0b11111,
 	};
-	LCD_Create_Char(p_lcd, 1, t_custom_char);
+	LCD_Create_Char(p_lcd, 0, t_custom_char);
 	char t_str_1[] = "Feed ";
 	for(int i = 0; i < strlen((char *)t_str_1); i++){
 		char t_str[2] = {t_str_1[i], 0};
@@ -50,7 +75,7 @@ void LCD_Init(LCD_I2C_HandleTypeDef *p_lcd, I2C_HandleTypeDef *p_hi2c, uint8_t p
 		LCD_Write(p_lcd, t_str);
 		HAL_Delay(150);
 	}
-	LCD_Write_Custom_Char(p_lcd, 1);
+	LCD_Write_Custom_Char(p_lcd, 0);
 	char t_str_2[] = " OS";
 	for(int i = 0; i < strlen((char *)t_str_2); i++){
 		char t_str[2] = {t_str_2[i], 0};
@@ -73,6 +98,18 @@ void LCD_Write(LCD_I2C_HandleTypeDef *p_lcd, const char *p_str, ...){
 
 	for(int i = 0; i < strlen(t_stringArray) && i < p_lcd->LCD_Columns; i++){
 		LCD_Send_Data(p_lcd, t_stringArray[i]);
+	}
+}
+
+void LCD_Write_String(LCD_I2C_HandleTypeDef *p_lcd, const char *p_str){
+	for(int i = 0; i < strlen(p_str) && i < p_lcd->LCD_Columns; i++){
+		if(p_str[i] == '\\'){
+			LCD_Write_Custom_Char(p_lcd, 1);
+		} else if(p_str[i] == '~'){
+			LCD_Write_Custom_Char(p_lcd, 2);
+		} else{
+			LCD_Send_Data(p_lcd, p_str[i]);
+		}
 	}
 }
 

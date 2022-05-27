@@ -21,6 +21,13 @@ void WL_MENU_Init(){
 }
 
 void WL_MENU_Enable_Recieve_SSID(){
+	WL_MENU_Data.first_line = 0;
+	WL_MENU_Data.num_of_wifi = 0;
+	for(int i = 0; i < 6; i++){
+		for(int j = 0; j < 21; j++){
+			WL_MENU_Data.wifi_list[i][j] = 0;
+		}
+	}
 	WL_MENU_Data.enable_receive_ssid = 1;
 }
 
@@ -55,6 +62,7 @@ void WL_MENU_Set_State(uint8_t p_first_line){
 
 void WL_MENU_Display(){
 	LCD_Clear(MENU_Data.hlcd);
+	LCD_Cursor_No_Blink(MENU_Data.hlcd);
 	for(int i = 0; i < 4; i++){
 		LCD_Set_Cursor(MENU_Data.hlcd, wifi_list_menu_frame[i].col, wifi_list_menu_frame[i].row);
 		LCD_Write(MENU_Data.hlcd, wifi_list_menu_frame[i].str);

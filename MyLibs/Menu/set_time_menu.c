@@ -104,11 +104,9 @@ void ST_MENU_Set_State_SigKey(uint8_t p_key){
 	MENU_Data.state = SET_TIME_MENU;
 	MENU_Data.changed = 0;
 	if(p_key == '#'){
-		if(ST_MENU_Data.setting_type < MASS_TYPE){
+		if(ST_MENU_Data.setting_type != CHECK_AGAIN){
 			ST_MENU_Data.setting_type++;
 			ST_MENU_Data.digit = 0;
-		} else if(ST_MENU_Data.setting_type == MASS_TYPE){
-			ST_MENU_Data.setting_type = CHECK_AGAIN;
 		} else if(ST_MENU_Data.setting_type == CHECK_AGAIN){
 			ST_MENU_Data.time_data[0] = atoi(set_time_menu_frame_var[0].str);
 			ST_MENU_Data.time_data[1] = atoi(set_time_menu_frame_var[1].str);
@@ -135,6 +133,7 @@ void ST_MENU_Display(){
 		LCD_Cursor_No_Blink(MENU_Data.hlcd);
 	} else{
 		LCD_Clear(MENU_Data.hlcd);
+		LCD_Cursor_Blink(MENU_Data.hlcd);
 		for(int i = 0; i < 5; i++){
 			LCD_Set_Cursor(MENU_Data.hlcd, set_time_menu_frame_const[i].col, set_time_menu_frame_const[i].row);
 			LCD_Write(MENU_Data.hlcd, set_time_menu_frame_const[i].str);

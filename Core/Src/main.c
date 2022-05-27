@@ -17,7 +17,6 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <menu.h>
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -124,9 +123,9 @@ int main(void)
 
   HAL_UART_Receive_IT(&huart2, &Rx_Buffer, 1);
   LCD_Init(&hlcd, &hi2c2, 20, 4, 0x4E);
-  LC_Init(&hlc1, GPIOA, GPIO_PIN_4, GPIOA, GPIO_PIN_5, 0.001045, -8832.797852, -2.0);
-  LC_Init(&hlc2, GPIOA, GPIO_PIN_6, GPIOA, GPIO_PIN_7, 0.000448, -3946.319824, -4.0);
-  LC_Init(&hlc3, GPIOB, GPIO_PIN_0, GPIOB, GPIO_PIN_1, 0.000440, -3618.708496, -3.0);
+  LC_Init(&hlc1, GPIOA, GPIO_PIN_4, GPIOA, GPIO_PIN_5, 0.001045, -8832.797852, 0.0);
+  LC_Init(&hlc2, GPIOA, GPIO_PIN_6, GPIOA, GPIO_PIN_7, 0.001144, -9502.714844, 0.0);
+  LC_Init(&hlc3, GPIOB, GPIO_PIN_0, GPIOB, GPIO_PIN_1, 0.000433, -3560.892822, -1.0);
 //  LC_Calibration(&hlc1);
 //  LC_Calibration(&hlc2);
 //  LC_Calibration(&hlc3);
@@ -323,9 +322,9 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 4799;
+  htim4.Init.Prescaler = 47;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = 199;
+  htim4.Init.Period = 19999;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim4) != HAL_OK)

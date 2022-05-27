@@ -68,6 +68,7 @@ void TL_MENU_Set_State(uint8_t p_first_line){
 
 void TL_MENU_Display(){
 	LCD_Clear(MENU_Data.hlcd);
+	LCD_Cursor_No_Blink(MENU_Data.hlcd);
 	for(int i = 0; i < 4; i++){
 		LCD_Set_Cursor(MENU_Data.hlcd, time_list_menu_frame[i].col, time_list_menu_frame[i].row);
 		LCD_Write(MENU_Data.hlcd, time_list_menu_frame[i].str);

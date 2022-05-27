@@ -18,9 +18,9 @@ long get_mass(){
 	long t_mass_1 = (long)LC_Get_Mass(CONTROL_Data.hlc1);
 	long t_mass_2 = (long)LC_Get_Mass(CONTROL_Data.hlc2);
 	long t_mass_3 = (long)LC_Get_Mass(CONTROL_Data.hlc3);
-//	uint8_t t_Tx_Buff[20] = {};
-//	sprintf((char*)t_Tx_Buff, "%ld %ld %ld ", t_mass_1, t_mass_2, t_mass_3);
-//	HAL_UART_Transmit(&huart1, t_Tx_Buff, strlen((char*)t_Tx_Buff), 500);
+	uint8_t t_Tx_Buff[20] = {};
+	sprintf((char*)t_Tx_Buff, "%ld %ld %ld ", t_mass_1, t_mass_2, t_mass_3);
+	HAL_UART_Transmit(&huart1, t_Tx_Buff, strlen((char*)t_Tx_Buff), 500);
 	return (long)(alpha * t_mass_1 + beta * t_mass_2 + gamma * t_mass_3);
 }
 
@@ -29,8 +29,8 @@ static void wait(){
 	uint16_t t_feeding_time = TIME_Data.flash_data[CONTROL_Data.next_time_index].hour * 60 + TIME_Data.flash_data[CONTROL_Data.next_time_index].minute;
 	if(t_current_time >= t_feeding_time && t_current_time - t_feeding_time <= 1){
 		CONTROL_Data.start_mass = get_mass();
-		CONTROL_Data.state = FEEDING;
 		feeding_timer = HAL_GetTick();
+		CONTROL_Data.state = FEEDING;
 		current_feeding_level = 1;
 	}
 	SERVO_Set_State(SERVO_OFF);
@@ -39,21 +39,25 @@ static void wait(){
 
 static void feed(){
 	static uint32_t feeding_level_timer = 0;
+	static uint32_t mass_error = 0;
+	static long last_mass = 0;
 	long t_current_mass = CONTROL_Data.start_mass - get_mass();
 	long t_total_feeding_mass = TIME_Data.flash_data[CONTROL_Data.next_time_index].mass;
 	MPU6050_callback(&mpu);
 	float pitch = mpu.pitch;
 	float roll = mpu.roll;
 	if(current_feeding_level <= CONTROL_Data.feeding_level && pitch > -45 && pitch < 45 && roll > -45 && roll < 45 && HAL_GetTick() - feeding_timer < FEEDING_TIMEOUT){
+		mass_error = (current_feeding_level == 1) ? (t_total_feeding_mass * current_feeding_level / CONTROL_Data.feeding_level) : mass_error;
 		switch(CONTROL_Data.feeding_state){
 			case WAITING_FOOD:
 				SERVO_Set_State(SERVO_ON);
 				MOTOR_Set_State(MOTOR_OFF);
-				long t_current_feeding_mass = t_total_feeding_mass * current_feeding_level / CONTROL_Data.feeding_level;
+				long t_current_feeding_mass = t_total_feeding_mass * current_feeding_level / CONTROL_Data.feeding_level  - mass_error * ((last_mass - t_current_mass > 10) ? 0.4 : 0.0);
 				if(t_current_mass > t_current_feeding_mass){
 					CONTROL_Data.feeding_state = THROWING_FOOD;
 				}
 				feeding_level_timer = HAL_GetTick();
+				last_mass = t_current_mass;
 				break;
 			case THROWING_FOOD:
 				SERVO_Set_State(SERVO_OFF);
@@ -68,10 +72,16 @@ static void feed(){
 				break;
 		}
 	} else{
-		current_feeding_level = 1;
 		CONTROL_Data.feeding_state = WAITING_FOOD;
 		CONTROL_Data.state = FINDING_NEXT;
 	}
+//	static uint32_t t_timer = 0;
+//	if(HAL_GetTick() - t_timer >= 2000){
+//		uint8_t Tx_Buff[50] = {};
+//		sprintf((char*)Tx_Buff, "%d %f %f\n", CONTROL_Data.state, pitch, roll);
+//		HAL_UART_Transmit(&huart1, Tx_Buff, strlen((char*)Tx_Buff), 500);
+//		t_timer = HAL_GetTick();
+//	}
 }
 
 static void find_next(){
@@ -84,7 +94,7 @@ static void find_next(){
 				CONTROL_Data.state = WAITING;
 				CONTROL_Data.feeding_state = WAITING_FOOD;
 				current_feeding_level = 1;
-				return;
+				break;
 			}
 		}
 	}
@@ -122,13 +132,13 @@ void CONTROL_Handle(){
 		default:
 			break;
 	}
-//	static uint32_t t_timer = 0;
-//	if(HAL_GetTick() - t_timer >= 2000){
-//		uint8_t Tx_Buff[50] = {};
-//		sprintf((char*)Tx_Buff, "%d %d %d\n", CONTROL_Data.state, CONTROL_Data.day, TIME_Data.flash_data[CONTROL_Data.next_time_index].day);
-//		HAL_UART_Transmit(&huart1, Tx_Buff, strlen((char*)Tx_Buff), 500);
-//		t_timer = HAL_GetTick();
-//	}
+	static uint32_t t_timer = 0;
+	if(HAL_GetTick() - t_timer >= 2000){
+		uint8_t Tx_Buff[50] = {};
+		sprintf((char*)Tx_Buff, "%d %d %d\n", CONTROL_Data.state, CONTROL_Data.day, TIME_Data.flash_data[CONTROL_Data.next_time_index].day);
+		HAL_UART_Transmit(&huart1, Tx_Buff, strlen((char*)Tx_Buff), 500);
+		t_timer = HAL_GetTick();
+	}
 }
 
 void CONTROL_Recheck_Time(){

@@ -87,6 +87,7 @@ void MAIN_MENU_Set_State_WiFi(char **p_arg_value, uint8_t p_arg_num){
 
 void MAIN_MENU_Display(){
 	LCD_Clear(MENU_Data.hlcd);
+	LCD_Cursor_No_Blink(MENU_Data.hlcd);
 	for(int i = 0; i < 5; i++){
 		LCD_Set_Cursor(MENU_Data.hlcd, main_menu_frame[i].col, main_menu_frame[i].row);
 		LCD_Write(MENU_Data.hlcd, main_menu_frame[i].str);

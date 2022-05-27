@@ -64,6 +64,7 @@ typedef struct{
 
 void LCD_Init(LCD_I2C_HandleTypeDef *p_lcd, I2C_HandleTypeDef *p_hi2c, uint8_t p_cols, uint8_t p_rows, uint8_t p_SLAVE_ADDRESS);
 void LCD_Write(LCD_I2C_HandleTypeDef *p_lcd, const char *p_str, ...);
+void LCD_Write_String(LCD_I2C_HandleTypeDef *p_lcd, const char *p_str);
 void LCD_Write_Custom_Char(LCD_I2C_HandleTypeDef *p_lcd, char p_location);
 void LCD_Clear(LCD_I2C_HandleTypeDef *p_lcd);
 void LCD_Set_Cursor(LCD_I2C_HandleTypeDef *p_lcd, uint8_t p_col, uint8_t p_row);

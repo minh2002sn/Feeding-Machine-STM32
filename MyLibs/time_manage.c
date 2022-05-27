@@ -33,7 +33,7 @@ void TIME_Add(uint8_t p_day, uint8_t p_hour, uint8_t p_minute, uint16_t p_mass){
 		TIME_Data.len++;
 		TIME_Sort();
 		TIME_Store_To_Flash();
-		CONTROL_Recheck_Time();
+//		CONTROL_Recheck_Time();
 	}
 }
 

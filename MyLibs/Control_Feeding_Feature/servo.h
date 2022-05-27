@@ -3,8 +3,9 @@
 
 #include "stm32f1xx_hal.h"
 
-#define MIN_CCR_SERVO_VALUE 5
-#define MAX_CCR_SERVO_VALUE 25
+#define MIN_CCR_SERVO_VALUE		500
+#define MAX_CCR_SERVO_VALUE		2500
+#define OPEN_CCR_SERVO_VALUE	800
 
 typedef enum{
 	SERVO_OFF,
@@ -13,10 +14,12 @@ typedef enum{
 
 typedef struct{
 	SERVO_STATE_HandleTypeDef state;
+	uint16_t CCR;
 }SERVO_DATA_HandleTypeDef;
 
 void SERVO_Init();
 void SERVO_Set_State(SERVO_STATE_HandleTypeDef p_state);
+void SERVO_Set_PWM(uint16_t p_ccr_register_value);
 void SERVO_Handle();
 
 SERVO_DATA_HandleTypeDef SERVO_Data;
