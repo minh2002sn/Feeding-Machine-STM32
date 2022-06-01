@@ -72,16 +72,83 @@ static void MX_USART1_UART_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+//#define ERROR_MASS 2
+//#define KP	1.0
+//#define	KI	0.5
+//float KD_2 = 10.0;
+//static float I = 0;
+//
+//uint8_t state = 0;
+//long start_mass = 0;
+//
+//int pid_calculation(uint16_t p_mass, uint16_t p_des_mass){
+//	static float last_error = 0;
+//	float KD = 0.5;
+//	float t_error = ((int16_t)p_des_mass - (int16_t)p_mass) * 1.0;
+//	float P = t_error;
+//	float D = t_error - last_error;
+//
+//	if(t_error <= 10) KD = KD_2;
+//
+//	if(last_error - t_error >= -0.1 && last_error - t_error <= 0.1){
+//		I += t_error;
+//	} else{
+//		if(I > 0){
+//			I -= t_error;
+//		} else{
+//			I = 0;
+//		}
+//	}
+//
+//	last_error = t_error;
+//	int result = (KP * P) + (KI * I) + (KD * D);
+//	char t_str[20] = {};
+//	sprintf(t_str, "%d %d %d %d\n", (int)P, (int)I, (int)D, result);
+//	HAL_UART_Transmit(&huart1, (uint8_t *)t_str, strlen(t_str), 500);
+//	return result;
+//}
+//
+//void pid_tunning(){
+//	long t_des_mass = 20;
+//	t_des_mass -= ERROR_MASS;
+//	long t_current_mass = start_mass - get_mass();
+//	if(t_current_mass >= t_des_mass){
+//		state = 0;
+//		HAL_UART_Transmit(&huart1, (uint8_t *)"Done\n", 5, 500);
+//		return;
+//	}
+//	uint16_t t_pid_value = pid_calculation(t_current_mass, t_des_mass);
+//	uint16_t t_ccr_value = MIN_CCR_SERVO_VALUE + t_pid_value;
+//	if(t_ccr_value > OPEN_CCR_SERVO_VALUE)
+//		t_ccr_value = OPEN_CCR_SERVO_VALUE;
+//	else if(t_ccr_value < MIN_CCR_SERVO_VALUE)
+//		t_ccr_value = MIN_CCR_SERVO_VALUE;
+//	SERVO_Set_PWM(t_ccr_value);
+//	SERVO_Set_State(SERVO_ON);
+//}
+
 LCD_I2C_HandleTypeDef hlcd;
 LC_HandleTypeDef hlc1, hlc2, hlc3;
 MPU6050_t mpu;
 
 static uint8_t Rx_Buffer;
+static uint8_t Rx_Buffer_1;
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *p_huart){
 	if(p_huart->Instance == huart2.Instance){
 		UART_Receive(Rx_Buffer);
 		HAL_UART_Receive_IT(&huart2, &Rx_Buffer, 1);
 	}
+//	if(p_huart->Instance == huart1.Instance){
+//		if(Rx_Buffer_1 == 'S'){
+//			if(state == 1)
+//				state = 0;
+//			else{
+//				state = 1;
+//				I = 0.0;
+//			}
+//		}
+//		HAL_UART_Receive_IT(&huart1, &Rx_Buffer_1, 1);
+//	}
 }
 
 /* USER CODE END 0 */
@@ -122,10 +189,11 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   HAL_UART_Receive_IT(&huart2, &Rx_Buffer, 1);
+//  HAL_UART_Receive_IT(&huart1, &Rx_Buffer_1, 1);
   LCD_Init(&hlcd, &hi2c2, 20, 4, 0x4E);
   LC_Init(&hlc1, GPIOA, GPIO_PIN_4, GPIOA, GPIO_PIN_5, 0.001045, -8832.797852, 0.0);
   LC_Init(&hlc2, GPIOA, GPIO_PIN_6, GPIOA, GPIO_PIN_7, 0.001144, -9502.714844, 0.0);
-  LC_Init(&hlc3, GPIOB, GPIO_PIN_0, GPIOB, GPIO_PIN_1, 0.000433, -3560.892822, -1.0);
+  LC_Init(&hlc3, GPIOB, GPIO_PIN_0, GPIOB, GPIO_PIN_1, 0.001142, -9671.430664, 0.0);
 //  LC_Calibration(&hlc1);
 //  LC_Calibration(&hlc2);
 //  LC_Calibration(&hlc3);
@@ -151,6 +219,13 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+//	  SERVO_Handle();
+//	  if(state == 0){
+//		  SERVO_Set_PWM(MIN_CCR_SERVO_VALUE);
+//		  start_mass = get_mass();
+//	  } else{
+//		  pid_tunning();
+//	  }
 
 	  // Handle keypad signal
 	  KEYPAD_DRIVER_Handle();
@@ -164,9 +239,7 @@ int main(void)
 	  // Handle feeding stage
 	  CONTROL_Handle();
 
-//	  uint8_t t_str[21] = {};
-//	  sprintf((char*)t_str, "%ld\n", get_mass());
-//	  HAL_UART_Transmit(&huart1, t_str, strlen((char*)t_str), 500);
+//	  get_mass();
 //	  HAL_Delay(1000);
   }
   /* USER CODE END 3 */
