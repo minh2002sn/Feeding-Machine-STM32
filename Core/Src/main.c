@@ -132,7 +132,7 @@ LC_HandleTypeDef hlc1, hlc2, hlc3;
 MPU6050_t mpu;
 
 static uint8_t Rx_Buffer;
-static uint8_t Rx_Buffer_1;
+//static uint8_t Rx_Buffer_1;
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *p_huart){
 	if(p_huart->Instance == huart2.Instance){
 		UART_Receive(Rx_Buffer);

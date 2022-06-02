@@ -5,6 +5,7 @@
 #include <menu.h>
 #include <time_list_menu.h>
 #include "LCD_I2C.h"
+#include "control.h"
 
 void DELETE_MENU_Init();
 void DELETE_MENU_Set_State(uint8_t p_index);

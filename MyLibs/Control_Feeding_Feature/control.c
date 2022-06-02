@@ -3,22 +3,30 @@
 extern UART_HandleTypeDef huart1;
 extern MPU6050_t mpu;
 
-#define FEEDING_TIMEOUT			180000
+#define FEEDING_TIMEOUT			300000
 #define FEEDING_LEVEL_TIMEOUT	20000
+#define MEASURING_TIMEOUT		10000
 #define MIN_MASS				5
 
 #define ALPHA					1.0
 #define BETA					1.0
 #define GAMMA					1.0
 
-#define ERROR_MASS 3
-#define KP	1.0
-#define	KI	0.5
-float KD_2 = 10.0;
+#define ERROR_MASS 				3
+#define KP_0					1.0
+#define	KI_0					0.5
+#define KD_0					10.0
+#define KP_1					1.0
+#define	KI_1					0.5
+#define KD_1					10.0
+#define KP_2					1.0
+#define	KI_2					0.5
+#define KD_2					10.0
 static float I = 0;
 static float last_error = 0.0;
 
 static uint32_t feeding_timer = 0;
+static uint32_t measure_timer = 0;
 static uint8_t current_feeding_level;
 
 void clean_pid_data(){
@@ -27,12 +35,24 @@ void clean_pid_data(){
 }
 
 int pid_calculation(uint16_t p_mass, uint16_t p_des_mass){
+	float KP = KP_0;
+	float KI = KI_0;
 	float KD = 0.5;
 	float t_error = ((int16_t)p_des_mass - (int16_t)p_mass) * 1.0;
 	float P = t_error;
 	float D = t_error - last_error;
 
-	if(t_error <= 10) KD = KD_2;
+//	if(CONTROL_Data.start_mass > 4000){
+//		KP = KP_2;
+//		KI = KI_2;
+//		KD = KD_2;
+//	} else if(ONTROL_Data.start_mass > 2000){
+//		KP = KP_1;
+//		KI = KI_1;
+//		KD = KD_1;
+//	}
+
+	if(t_error <= 15) KD = KD_0;
 
 	if(last_error - t_error >= -0.1 && last_error - t_error <= 0.1){
 		I += t_error;
@@ -67,18 +87,19 @@ static void wait(){
 	uint16_t t_current_time = CONTROL_Data.hour * 60 + CONTROL_Data.minute;
 	uint16_t t_feeding_time = TIME_Data.flash_data[CONTROL_Data.next_time_index].hour * 60 + TIME_Data.flash_data[CONTROL_Data.next_time_index].minute;
 	if(t_current_time >= t_feeding_time && t_current_time - t_feeding_time <= 1){
-		CONTROL_Data.start_mass = get_mass();
-		feeding_timer = HAL_GetTick();
 		CONTROL_Data.state = FEEDING;
-		CONTROL_Data.feeding_state = WAITING_FOOD;
+		CONTROL_Data.feeding_state = MEASURING_BEFORE_FEEDING;
 		current_feeding_level = 1;
 		clean_pid_data();
+		feeding_timer = HAL_GetTick();
 	}
 	SERVO_Set_State(SERVO_OFF);
 	MOTOR_Set_State(MOTOR_OFF);
 }
 
 static void feed(){
+	static long temp_mass[3] = {};
+	static uint8_t num_mass = 0;
 	static uint32_t feeding_level_timer = 0;
 	long t_current_mass = CONTROL_Data.start_mass - get_mass();
 	long t_total_feeding_mass = TIME_Data.flash_data[CONTROL_Data.next_time_index].mass;
@@ -87,36 +108,78 @@ static void feed(){
 	float roll = mpu.roll;
 	if(current_feeding_level <= CONTROL_Data.feeding_level && pitch > -45 && pitch < 45 && roll > -45 && roll < 45 && HAL_GetTick() - feeding_timer < FEEDING_TIMEOUT){
 		switch(CONTROL_Data.feeding_state){
+			case MEASURING_BEFORE_FEEDING:
+				SERVO_Set_State(SERVO_OFF);
+				MOTOR_Set_State(MOTOR_OFF);
+				if(HAL_GetTick() - measure_timer >= 1000){
+					temp_mass[(num_mass) % 3] = get_mass();
+					num_mass++;
+					measure_timer = HAL_GetTick();
+				}
+				if(num_mass % 3 == 0){
+					float t_delta_mass = (abs(temp_mass[0] - temp_mass[1]) + abs(temp_mass[1] - temp_mass[2])) / 2;
+					if(t_delta_mass <= 1.1){
+						long t_mass = (temp_mass[0] + temp_mass[1] + temp_mass[2]) / 3;
+						if(current_feeding_level == 1)
+							CONTROL_Data.start_mass = t_mass;
+						uint8_t t_Tx_Buff[20] = {};
+						sprintf((char*)t_Tx_Buff, "%ld,", t_mass);
+						HAL_UART_Transmit(&huart1, t_Tx_Buff, strlen((char*)t_Tx_Buff), 500);
+						CONTROL_Data.feeding_state = WAITING_FOOD;
+					}
+				}
+				break;
 			case WAITING_FOOD:
 				SERVO_Set_State(SERVO_ON);
 				MOTOR_Set_State(MOTOR_OFF);
-				long t_current_des_mass = t_total_feeding_mass * current_feeding_level / CONTROL_Data.feeding_level;
+				long t_current_des_mass = (long)(t_total_feeding_mass * current_feeding_level / CONTROL_Data.feeding_level) - ERROR_MASS;
 				if(t_current_mass > t_current_des_mass){
 					CONTROL_Data.feeding_state = THROWING_FOOD;
+					feeding_level_timer = HAL_GetTick();
 				}
-				uint16_t t_ccr_value = MIN_CCR_SERVO_VALUE + pid_calculation(t_current_mass, t_current_des_mass - ERROR_MASS);
+				uint16_t t_ccr_value = MIN_CCR_SERVO_VALUE + pid_calculation(t_current_mass, t_current_des_mass);
 				if(t_ccr_value > OPEN_CCR_SERVO_VALUE)
 					t_ccr_value = OPEN_CCR_SERVO_VALUE;
 				else if(t_ccr_value < MIN_CCR_SERVO_VALUE)
 					t_ccr_value = MIN_CCR_SERVO_VALUE;
 				SERVO_Set_PWM(t_ccr_value);
-				feeding_level_timer = HAL_GetTick();
 				break;
 			case THROWING_FOOD:
 				SERVO_Set_State(SERVO_OFF);
 				MOTOR_Set_PWM((MAX_PWM_VALUE - MIN_PWM_VALUE) * current_feeding_level / CONTROL_Data.feeding_level);
 				MOTOR_Set_State(MOTOR_ON);
 				if(HAL_GetTick() - feeding_level_timer > FEEDING_LEVEL_TIMEOUT){
-					CONTROL_Data.feeding_state = WAITING_FOOD;
-					current_feeding_level++;
+					CONTROL_Data.feeding_state = MEASURING_AFTER_FEEDING;
 					clean_pid_data();
+				}
+				break;
+			case MEASURING_AFTER_FEEDING:
+				SERVO_Set_State(SERVO_OFF);
+				MOTOR_Set_State(MOTOR_OFF);
+				if(HAL_GetTick() - measure_timer >= 1000){
+					temp_mass[num_mass % 3] = get_mass();
+					num_mass++;
+					measure_timer = HAL_GetTick();
+				}
+				if(num_mass % 3 == 0){
+					float t_delta_mass = (abs(temp_mass[0] - temp_mass[1]) + abs(temp_mass[1] - temp_mass[2])) / 2;
+					if(t_delta_mass <= 1.1){
+						long t_mass = (temp_mass[0] + temp_mass[1] + temp_mass[2]) / 3;
+						uint8_t t_Tx_Buff[20] = {};
+						sprintf((char*)t_Tx_Buff, "%ld,", t_mass);
+						HAL_UART_Transmit(&huart1, t_Tx_Buff, strlen((char*)t_Tx_Buff), 500);
+						if(current_feeding_level == CONTROL_Data.feeding_level)
+							HAL_UART_Transmit(&huart1, (uint8_t *)"\n", 1, 500);
+						CONTROL_Data.feeding_state = MEASURING_BEFORE_FEEDING;
+						measure_timer -= 1000;
+						current_feeding_level++;
+					}
 				}
 				break;
 			default:
 				break;
 		}
 	} else{
-		CONTROL_Data.feeding_state = WAITING_FOOD;
 		CONTROL_Data.state = FINDING_NEXT;
 	}
 //	static uint32_t t_timer = 0;
@@ -133,7 +196,7 @@ static void find_next(){
 		for(int i = 0; i < TIME_Data.len; i++){
 			uint16_t t_current_time = CONTROL_Data.hour * 60 + CONTROL_Data.minute;
 			uint16_t t_feeding_time = TIME_Data.flash_data[i].hour * 60 + TIME_Data.flash_data[i].minute;
-			if(t_current_time <= t_feeding_time && (CONTROL_Data.day | TIME_Data.flash_data[i].day) != 0){
+			if(t_current_time <= t_feeding_time && (CONTROL_Data.day & TIME_Data.flash_data[i].day) != 0){
 				CONTROL_Data.next_time_index = i;
 				CONTROL_Data.state = WAITING;
 				break;
@@ -146,8 +209,11 @@ static void find_next(){
 
 void CONTROL_Init(LC_HandleTypeDef *p_hlc1, LC_HandleTypeDef *p_hlc2, LC_HandleTypeDef *p_hlc3){
 	CONTROL_Data.state = FINDING_NEXT;
-	CONTROL_Data.feeding_state = WAITING_FOOD;
+	CONTROL_Data.feeding_state = MEASURING_BEFORE_FEEDING;
 	CONTROL_Data.feeding_level = 3;
+	CONTROL_Data.hour = 0;
+	CONTROL_Data.minute = 0;
+	CONTROL_Data.day = 1;
 	CONTROL_Data.hlc1 = p_hlc1;
 	CONTROL_Data.hlc2 = p_hlc2;
 	CONTROL_Data.hlc3 = p_hlc3;
@@ -184,17 +250,15 @@ void CONTROL_Handle(){
 }
 
 void CONTROL_Recheck_Time(){
-	if(CONTROL_Data.state == FEEDING){
-		SERVO_Set_State(SERVO_OFF);
-		MOTOR_Set_State(MOTOR_OFF);
-		MOTOR_Set_PWM(STOP_PWM_VALUE);
+	if(CONTROL_Data.state != FEEDING){
+		CONTROL_Data.state = FINDING_NEXT;
 	}
-	CONTROL_Data.state = FINDING_NEXT;
 }
 
 void CONTROL_Set_Time(uint8_t p_hour, uint8_t p_minute, uint8_t p_day){
 	CONTROL_Data.hour = p_hour;
 	CONTROL_Data.minute = p_minute;
 	CONTROL_Data.day = p_day;
+	CONTROL_Recheck_Time();
 }
 

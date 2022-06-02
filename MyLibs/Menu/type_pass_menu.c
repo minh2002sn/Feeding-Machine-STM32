@@ -72,7 +72,7 @@ void TP_MENU_Set_State_SigKey(uint8_t p_key){
 	} else if(p_key == '#'){
 		if(TP_MENU_Data.pass_digit < MAX_PASS_LEN && TP_MENU_Data.pass[TP_MENU_Data.pass_digit] != 0){
 			TP_MENU_Data.pass_digit++;
-			TP_MENU_Data.pass[TP_MENU_Data.pass_digit] = ' ';
+			TP_MENU_Data.pass[TP_MENU_Data.pass_digit] = 0;
 			key_index = 7;
 		}
 	}

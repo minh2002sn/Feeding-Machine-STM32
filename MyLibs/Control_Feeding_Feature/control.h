@@ -12,8 +12,10 @@
 #include "stdio.h"
 
 typedef enum{
+	MEASURING_BEFORE_FEEDING,
 	WAITING_FOOD,
 	THROWING_FOOD,
+	MEASURING_AFTER_FEEDING,
 } FEEDING_STATE_HandleTypeDef;
 
 typedef enum{

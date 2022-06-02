@@ -14,8 +14,11 @@ void DELETE_MENU_Set_State(uint8_t p_index){
 }
 
 void DELETE_MENU_Set_State_Delete(){
-	TIME_Delete(current_index);
+	if(CONTROL_Data.state != FEEDING){
+		TIME_Delete(current_index);
+	}
 	TL_MENU_Set_State(0);
+
 }
 
 void DELETE_MENU_Display(){
