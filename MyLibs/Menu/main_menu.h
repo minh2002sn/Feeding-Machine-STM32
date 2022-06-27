@@ -4,9 +4,9 @@
 #define KALMAN_FILTER
 
 #include "LCD_I2C.h"
-#include <frame.h>
-#include <menu.h>
-#include <dictionary.h>
+#include "frame.h"
+#include "menu.h"
+#include "dictionary.h"
 
 typedef enum{
 	WIFI_DISCONNECTED,
@@ -30,6 +30,6 @@ void MAIN_MENU_Set_State_Time(uint8_t p_hour, uint8_t p_minute, uint8_t p_day);
 void MAIN_MENU_Set_State_WiFi(char **p_arg_value, uint8_t p_arg_num);
 void MAIN_MENU_Display();
 
-MAIN_MENU_DATA_HandleTypeDef MAIN_MENU_Data;
+extern MAIN_MENU_DATA_HandleTypeDef MAIN_MENU_Data;
 
 #endif

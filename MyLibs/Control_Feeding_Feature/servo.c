@@ -1,6 +1,7 @@
 #include "servo.h"
 
 extern TIM_HandleTypeDef htim4;
+SERVO_DATA_HandleTypeDef SERVO_Data;
 
 void SERVO_Init(){
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);

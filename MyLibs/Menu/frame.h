@@ -1,7 +1,7 @@
 #ifndef FRAME_H
 #define FRAME_H
 
-#include "stdint.h"
+#include <stdint.h>
 
 typedef struct{
 	uint8_t col;

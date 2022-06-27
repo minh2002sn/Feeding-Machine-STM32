@@ -1,6 +1,7 @@
-#include <main_menu.h>
+#include "main_menu.h"
 
 extern UART_HandleTypeDef huart1;
+MAIN_MENU_DATA_HandleTypeDef MAIN_MENU_Data;
 
 // Day of week strings display on LCD
 static dictionary DAY_Str[7] = {

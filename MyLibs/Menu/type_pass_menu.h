@@ -4,9 +4,9 @@
 #define MAX_PASS_LEN 50
 
 #include "LCD_I2C.h"
-#include <frame.h>
-#include <menu.h>
-#include <wifi_list_menu.h>
+#include "frame.h"
+#include "menu.h"
+#include "wifi_list_menu.h"
 
 typedef struct{
 	uint8_t ssid_index;
@@ -22,6 +22,6 @@ void TP_MENU_Set_State_Upper(uint8_t p_key);
 void TP_MENU_Done_Type_Pass();
 void TP_MENU_Display();
 
-TYPE_PASS_MENU_DATA_HandleTypeDef TP_MENU_Data;
+extern TYPE_PASS_MENU_DATA_HandleTypeDef TP_MENU_Data;
 
 #endif

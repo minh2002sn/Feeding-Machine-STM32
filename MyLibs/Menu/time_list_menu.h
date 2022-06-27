@@ -1,10 +1,10 @@
 #ifndef TIME_LIST_MENU_H
 #define TIME_LIST_MENU_H
 
-#include <dictionary.h>
-#include <frame.h>
-#include <menu.h>
-#include <time_manage.h>
+#include "dictionary.h"
+#include "frame.h"
+#include "menu.h"
+#include "time_manage.h"
 #include "LCD_I2C.h"
 
 #define NUMBER_OF_CHOICE (MAX_OPTIONS + 1)
@@ -20,6 +20,6 @@ void TL_MENU_Init();
 void TL_MENU_Set_State(uint8_t p_first_line);
 void TL_MENU_Display();
 
-TL_MENU_DATA_HandleTypeDef TL_MENU_Data;
+extern TL_MENU_DATA_HandleTypeDef TL_MENU_Data;
 
 #endif

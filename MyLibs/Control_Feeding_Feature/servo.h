@@ -22,6 +22,6 @@ void SERVO_Set_State(SERVO_STATE_HandleTypeDef p_state);
 void SERVO_Set_PWM(uint16_t p_ccr_register_value);
 void SERVO_Handle();
 
-SERVO_DATA_HandleTypeDef SERVO_Data;
+extern SERVO_DATA_HandleTypeDef SERVO_Data;
 
 #endif

@@ -1,6 +1,7 @@
 #include "motor.h"
 
 extern TIM_HandleTypeDef htim3;
+MOTOR_DATA_HandleTypeDef MOTOR_Data;
 
 void MOTOR_Init(MOTOR_MOVE_HandleTypeDef p_move){
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);

@@ -2,6 +2,7 @@
 
 extern UART_HandleTypeDef huart1;
 extern MPU6050_t mpu;
+CONTROL_DATA_HandleTypeDef CONTROL_Data;
 
 #define FEEDING_TIMEOUT			300000
 #define FEEDING_LEVEL_TIMEOUT	20000
@@ -137,6 +138,7 @@ static void feed(){
 					CONTROL_Data.feeding_state = THROWING_FOOD;
 					feeding_level_timer = HAL_GetTick();
 				}
+				// Set servo's PWM value
 				uint16_t t_ccr_value = MIN_CCR_SERVO_VALUE + pid_calculation(t_current_mass, t_current_des_mass);
 				if(t_ccr_value > OPEN_CCR_SERVO_VALUE)
 					t_ccr_value = OPEN_CCR_SERVO_VALUE;

@@ -1,7 +1,8 @@
-#include <menu.h>
+#include "menu.h"
 
 #define SCANNING_TIMEOUT			20000
 #define SETTING_TIMELINE_TIMEOUT	60000
+MENU_DATA_HandleTypeDef MENU_Data;
 
 void MENU_Init(LCD_I2C_HandleTypeDef *p_hlcd){
 	MENU_Data.changed = 0;

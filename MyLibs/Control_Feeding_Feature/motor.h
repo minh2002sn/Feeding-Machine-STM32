@@ -29,6 +29,6 @@ void MOTOR_Set_State(MOTOR_STATE_HandleTypdeDef p_state);
 void MOTOR_Set_PWM(uint8_t p_run_pwm_value);
 void MOTOR_Handle();
 
-MOTOR_DATA_HandleTypeDef MOTOR_Data;
+extern MOTOR_DATA_HandleTypeDef MOTOR_Data;
 
 #endif

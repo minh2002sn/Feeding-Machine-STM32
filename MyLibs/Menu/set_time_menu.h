@@ -1,11 +1,11 @@
 #ifndef SET_TIME_MENU_H
 #define SET_TIME_MENU_H
 
-#include <dictionary.h>
-#include <frame.h>
-#include <menu.h>
-#include <time_list_menu.h>
-#include <time_manage.h>
+#include "dictionary.h"
+#include "frame.h"
+#include "menu.h"
+#include "time_list_menu.h"
+#include "time_manage.h"
 #include "LCD_I2C.h"
 
 typedef enum{
@@ -28,6 +28,6 @@ void ST_MENU_Set_State_NumKey(uint8_t p_key);
 void ST_MENU_Set_State_SigKey(uint8_t p_key);
 void ST_MENU_Display();
 
-ST_MENU_Data_HandleTypeDef ST_MENU_Data;
+extern ST_MENU_Data_HandleTypeDef ST_MENU_Data;
 
 #endif

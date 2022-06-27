@@ -1,7 +1,7 @@
 #ifndef FEEDING_CONTROL_H
 #define FEEDING_CONTROL_H
 
-#include <time_manage.h>
+#include "time_manage.h"
 #include "loadcell.h"
 #include "motor.h"
 #include "servo.h"
@@ -44,6 +44,6 @@ void CONTROL_Recheck_Time();
 void CONTROL_Set_Time(uint8_t p_hour, uint8_t p_minute, uint8_t p_day);
 long get_mass();
 
-CONTROL_DATA_HandleTypeDef CONTROL_Data;
+extern CONTROL_DATA_HandleTypeDef CONTROL_Data;
 
 #endif

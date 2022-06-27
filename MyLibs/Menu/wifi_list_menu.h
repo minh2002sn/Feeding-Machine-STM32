@@ -1,8 +1,8 @@
 #ifndef WIFI_LIST_H
 #define WIFI_LIST_H
 
-#include <frame.h>
-#include <menu.h>
+#include "frame.h"
+#include "menu.h"
 #include "LCD_I2C.h"
 
 typedef struct{
@@ -19,6 +19,6 @@ uint8_t WL_MENU_Is_Enable_Receiving_SSID();
 void WL_MENU_Set_State(uint8_t p_first_line);
 void WL_MENU_Display();
 
-WIFI_LIST_MENU_DATA_HandleTypeDef WL_MENU_Data;
+extern WIFI_LIST_MENU_DATA_HandleTypeDef WL_MENU_Data;
 
 #endif

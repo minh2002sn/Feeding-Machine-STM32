@@ -1,7 +1,7 @@
 #ifndef CLI_COMMAND_H
 #define CLI_COMMAND_H
 
-#include <menu.h>
+#include "menu.h"
 #include "stdint.h"
 #include "stm32f1xx_hal.h"
 #include "string.h"

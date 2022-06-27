@@ -1,6 +1,7 @@
-#include <set_time_menu.h>
+#include "set_time_menu.h"
 
 //extern UART_HandleTypeDef huart2;
+ST_MENU_Data_HandleTypeDef ST_MENU_Data;
 
 static FRAME_HandleTypeDef set_time_menu_frame_const[5] = {
 		{0, 0, "Time: "},

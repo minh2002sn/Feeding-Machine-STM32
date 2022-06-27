@@ -1,6 +1,7 @@
-#include <type_pass_menu.h>
+#include "type_pass_menu.h"
 
 extern UART_HandleTypeDef huart2;
+TYPE_PASS_MENU_DATA_HandleTypeDef TP_MENU_Data;
 
 static char key_map[4][4][9] = {
 		{"1.,?!",	"2abc",		"3def",		"A~`@#$%^"},

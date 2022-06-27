@@ -1,13 +1,13 @@
 #ifndef MENU_H
 #define MENU_H
 
-#include <delete_menu.h>
-#include <dictionary.h>
-#include <main_menu.h>
-#include <set_time_menu.h>
-#include <time_list_menu.h>
-#include <type_pass_menu.h>
-#include <wifi_list_menu.h>
+#include "delete_menu.h"
+#include "dictionary.h"
+#include "main_menu.h"
+#include "set_time_menu.h"
+#include "time_list_menu.h"
+#include "type_pass_menu.h"
+#include "wifi_list_menu.h"
 #include "LCD_I2C.h"
 
 typedef enum{
@@ -35,6 +35,6 @@ void MENU_Handle();
 void WS_MENU_Set_State();
 void WS_MENU_Display();
 
-MENU_DATA_HandleTypeDef MENU_Data;
+extern MENU_DATA_HandleTypeDef MENU_Data;
 
 #endif

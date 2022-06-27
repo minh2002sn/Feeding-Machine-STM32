@@ -1,7 +1,7 @@
-#include <time_manage.h>
-
+#include "time_manage.h"
 
 //extern UART_HandleTypeDef huart1;
+TIME_DATA_HandleTypdeDef TIME_Data;
 
 void TIME_Init(){
 	TIME_Data.add = FIRST_PAGE_ADD + BYTE_PER_PAGE * 63;

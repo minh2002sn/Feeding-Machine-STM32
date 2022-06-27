@@ -28,6 +28,6 @@ void TIME_Delete(uint8_t p_index);
 void TIME_Sort();
 void TIME_Store_To_Flash();
 
-TIME_DATA_HandleTypdeDef TIME_Data;
+extern TIME_DATA_HandleTypdeDef TIME_Data;
 
 #endif

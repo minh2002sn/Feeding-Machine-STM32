@@ -1,6 +1,7 @@
-#include <wifi_list_menu.h>
+#include "wifi_list_menu.h"
 
 extern UART_HandleTypeDef huart1;
+WIFI_LIST_MENU_DATA_HandleTypeDef WL_MENU_Data;
 
 FRAME_HandleTypeDef wifi_list_menu_frame[4] = {
 		{0, 0, ""},
