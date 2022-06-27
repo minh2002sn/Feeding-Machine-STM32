@@ -1,14 +1,29 @@
 #include "time_manage.h"
 
-//extern UART_HandleTypeDef huart1;
+#define DATA_FRAME_SIZE 6 // in byte
+
+extern UART_HandleTypeDef huart2;
 TIME_DATA_HandleTypdeDef TIME_Data;
+
+void TIME_UART_Display(){
+	if(TIME_Data.len == 0){
+		HAL_UART_Transmit(&huart2, (uint8_t *)"No data\n", 8, 1000);
+	} else{
+		for(int i = 0; i < TIME_Data.len; i++){
+			char Tx_Buffer[30] = {};
+			sprintf(Tx_Buffer, "%d, %dh%dm: %d (g)\n", TIME_Data.flash_data[i].day, TIME_Data.flash_data[i].hour,
+					TIME_Data.flash_data[i].minute, TIME_Data.flash_data[i].mass);
+			HAL_UART_Transmit(&huart2, (uint8_t *)Tx_Buffer, strlen(Tx_Buffer), 1000);
+		}
+	}
+}
 
 void TIME_Init(){
 	TIME_Data.add = FIRST_PAGE_ADD + BYTE_PER_PAGE * 63;
 	TIME_Data.len = 0;
 	for(int i = 0; i < MAX_OPTIONS; i++){
-		uint8_t t_data[5] = {};
-		FLASH_Read(TIME_Data.add + i*5, t_data, 5);
+		uint8_t t_data[DATA_FRAME_SIZE] = {};
+		FLASH_Read(TIME_Data.add + i*DATA_FRAME_SIZE, t_data, DATA_FRAME_SIZE);
 		if(t_data[0] == 0xFF){
 			TIME_Data.flash_data[i].day = 0xFF;
 			TIME_Data.flash_data[i].hour = 0xFF;
@@ -33,7 +48,7 @@ void TIME_Add(uint8_t p_day, uint8_t p_hour, uint8_t p_minute, uint16_t p_mass){
 		TIME_Data.len++;
 		TIME_Sort();
 		TIME_Store_To_Flash();
-		CONTROL_Recheck_Time();
+//		CONTROL_Recheck_Time();
 	}
 }
 
@@ -56,10 +71,10 @@ void TIME_Delete(uint8_t p_index){
 		TIME_Data.flash_data[TIME_Data.len - 1].day = 0xFF;
 		TIME_Data.flash_data[TIME_Data.len - 1].hour = 0xFF;
 		TIME_Data.flash_data[TIME_Data.len - 1].minute = 0xFF;
-		TIME_Data.flash_data[TIME_Data.len - 1].mass = 0xFF;
+		TIME_Data.flash_data[TIME_Data.len - 1].mass = 0xFFFF;
 		TIME_Data.len--;
 		TIME_Store_To_Flash();
-		CONTROL_Recheck_Time();
+//		CONTROL_Recheck_Time();
 	}
 }
 
@@ -79,15 +94,15 @@ void TIME_Sort(){
 }
 
 void TIME_Store_To_Flash(){
-	FLASH_Erase(63);
 	uint8_t *t_data;
-	t_data = (uint8_t *)malloc(TIME_Data.len * 5 * sizeof(uint8_t));
+	t_data = (uint8_t *)malloc(TIME_Data.len * DATA_FRAME_SIZE * sizeof(uint8_t));
 	for(int i = 0; i < TIME_Data.len; i++){
-		*(t_data + i*5) = TIME_Data.flash_data[i].day;
-		*(t_data + i*5 + 1) = TIME_Data.flash_data[i].hour;
-		*(t_data + i*5 + 2) = TIME_Data.flash_data[i].minute;
-		*(t_data + i*5 + 3) = TIME_Data.flash_data[i].mass;
-		*(t_data + i*5 + 4) = TIME_Data.flash_data[i].mass >> 8;
+		*(t_data + i * DATA_FRAME_SIZE) = TIME_Data.flash_data[i].day;
+		*(t_data + i * DATA_FRAME_SIZE + 1) = TIME_Data.flash_data[i].hour;
+		*(t_data + i * DATA_FRAME_SIZE + 2) = TIME_Data.flash_data[i].minute;
+		*(t_data + i * DATA_FRAME_SIZE + 3) = TIME_Data.flash_data[i].mass;
+		*(t_data + i * DATA_FRAME_SIZE + 4) = TIME_Data.flash_data[i].mass >> 8;
+		*(t_data + i * DATA_FRAME_SIZE + 5) = 0xFF;
 	}
-	FLASH_Write(63, t_data, TIME_Data.len * 5);
+	FLASH_Write(63, t_data, TIME_Data.len * DATA_FRAME_SIZE);
 }

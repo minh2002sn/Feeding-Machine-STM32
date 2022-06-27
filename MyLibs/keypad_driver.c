@@ -4,6 +4,9 @@ extern UART_HandleTypeDef huart2;
 //extern UART_HandleTypeDef huart1;
 
 void KeypadPressingCallback(uint8_t p_key){
+//	uint8_t Tx_Buffer[3] = {};
+//	sprintf((char *)Tx_Buffer, "%c\n", p_key);
+//	HAL_UART_Transmit(&huart2, Tx_Buffer, 2, 100);
 	switch(MENU_Data.state){
 		case MAIN_MENU:
 			if(p_key == '1'){

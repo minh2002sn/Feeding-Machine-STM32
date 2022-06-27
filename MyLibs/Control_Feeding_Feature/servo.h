@@ -1,9 +1,9 @@
 #ifndef SERVO_H
 #define SERVO_H
 
-#include "stm32f1xx_hal.h"
+#include "stm32f0xx_hal.h"
 
-#define MIN_CCR_SERVO_VALUE		500
+#define MIN_CCR_SERVO_VALUE		510
 #define MAX_CCR_SERVO_VALUE		2500
 #define OPEN_CCR_SERVO_VALUE	800
 

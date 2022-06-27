@@ -1,6 +1,6 @@
 #include "control.h"
 
-extern UART_HandleTypeDef huart1;
+extern UART_HandleTypeDef huart2;
 extern MPU6050_t mpu;
 CONTROL_DATA_HandleTypeDef CONTROL_Data;
 
@@ -80,7 +80,7 @@ long get_mass(){
 	long t_result = (long)(ALPHA * t_mass_1 + BETA * t_mass_2 + GAMMA * t_mass_3);
 //	uint8_t t_Tx_Buff[20] = {};
 //	sprintf((char*)t_Tx_Buff, "%ld %ld %ld %ld\n", t_mass_1, t_mass_2, t_mass_3, t_result);
-//	HAL_UART_Transmit(&huart1, t_Tx_Buff, strlen((char*)t_Tx_Buff), 500);
+//	HAL_UART_Transmit(&huart2, t_Tx_Buff, strlen((char*)t_Tx_Buff), 500);
 	return t_result;
 }
 
@@ -104,9 +104,9 @@ static void feed(){
 	static uint32_t feeding_level_timer = 0;
 	long t_current_mass = CONTROL_Data.start_mass - get_mass();
 	long t_total_feeding_mass = TIME_Data.flash_data[CONTROL_Data.next_time_index].mass;
-	MPU6050_callback(&mpu);
-	float pitch = mpu.pitch;
-	float roll = mpu.roll;
+//	MPU6050_callback(&mpu);
+	float pitch = 0;
+	float roll = 0;
 	if(current_feeding_level <= CONTROL_Data.feeding_level && pitch > -45 && pitch < 45 && roll > -45 && roll < 45 && HAL_GetTick() - feeding_timer < FEEDING_TIMEOUT){
 		switch(CONTROL_Data.feeding_state){
 			case MEASURING_BEFORE_FEEDING:
@@ -123,9 +123,9 @@ static void feed(){
 						long t_mass = (temp_mass[0] + temp_mass[1] + temp_mass[2]) / 3;
 						if(current_feeding_level == 1)
 							CONTROL_Data.start_mass = t_mass;
-						uint8_t t_Tx_Buff[20] = {};
-						sprintf((char*)t_Tx_Buff, "%ld,", t_mass);
-						HAL_UART_Transmit(&huart1, t_Tx_Buff, strlen((char*)t_Tx_Buff), 500);
+//						uint8_t t_Tx_Buff[20] = {};
+//						sprintf((char*)t_Tx_Buff, "%ld,", t_mass);
+//						HAL_UART_Transmit(&huart1, t_Tx_Buff, strlen((char*)t_Tx_Buff), 500);
 						CONTROL_Data.feeding_state = WAITING_FOOD;
 					}
 				}
@@ -167,11 +167,11 @@ static void feed(){
 					float t_delta_mass = (abs(temp_mass[0] - temp_mass[1]) + abs(temp_mass[1] - temp_mass[2])) / 2;
 					if(t_delta_mass <= 1.1){
 						long t_mass = (temp_mass[0] + temp_mass[1] + temp_mass[2]) / 3;
-						uint8_t t_Tx_Buff[20] = {};
-						sprintf((char*)t_Tx_Buff, "%ld,", t_mass);
-						HAL_UART_Transmit(&huart1, t_Tx_Buff, strlen((char*)t_Tx_Buff), 500);
-						if(current_feeding_level == CONTROL_Data.feeding_level)
-							HAL_UART_Transmit(&huart1, (uint8_t *)"\n", 1, 500);
+//						uint8_t t_Tx_Buff[20] = {};
+//						sprintf((char*)t_Tx_Buff, "%ld,", t_mass);
+//						HAL_UART_Transmit(&huart1, t_Tx_Buff, strlen((char*)t_Tx_Buff), 500);
+//						if(current_feeding_level == CONTROL_Data.feeding_level)
+//							HAL_UART_Transmit(&huart1, (uint8_t *)"\n", 1, 500);
 						CONTROL_Data.feeding_state = MEASURING_BEFORE_FEEDING;
 						measure_timer -= 1000;
 						current_feeding_level++;

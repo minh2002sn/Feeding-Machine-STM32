@@ -8,7 +8,7 @@
 #include "mpu6050.h"
 #include "stdint.h"
 #include "string.h"
-#include "stm32f1xx_hal.h"
+#include "stm32f0xx_hal.h"
 #include "stdio.h"
 
 typedef enum{

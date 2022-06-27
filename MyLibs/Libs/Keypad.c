@@ -1,7 +1,7 @@
 #include "Keypad.h"
 //-----------keypad------------
 
-extern UART_HandleTypeDef huart1;
+extern UART_HandleTypeDef huart2;
 
 const uint8_t key_code[KEYPAD_ROW][KEYPAD_COL] =
 { 
@@ -105,7 +105,7 @@ void Keypad_Handle()
 		else
 		{
 			is_press = 0;
-			if(HAL_GetTick() - time_start_press <=1000)//nhan nha nhanh
+			if(HAL_GetTick() - time_start_press <=1000) //nhan nha nhanh
 			{
 				KeypadPressedShortCallback(key_last);
 			}

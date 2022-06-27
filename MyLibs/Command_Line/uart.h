@@ -3,7 +3,7 @@
 
 //#include "read_time.h"
 #include "stdint.h"
-#include "stm32f1xx_hal.h"
+#include "stm32f0xx_hal.h"
 #include "cli_command.h"
 
 void UART_Init();

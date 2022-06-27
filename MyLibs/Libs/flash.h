@@ -2,7 +2,7 @@
 #define FLASH_H
 
 #include "stdint.h"
-#include "stm32f1xx_hal.h"
+#include "stm32f0xx.h"
 
 #define FIRST_PAGE_ADD 0x08000000
 #define BYTE_PER_PAGE  1024

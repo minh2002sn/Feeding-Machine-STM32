@@ -1,11 +1,11 @@
 #include "servo.h"
 
-extern TIM_HandleTypeDef htim4;
+extern TIM_HandleTypeDef htim16;
 SERVO_DATA_HandleTypeDef SERVO_Data;
 
 void SERVO_Init(){
-	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
-	htim4.Instance->CCR3 = MIN_CCR_SERVO_VALUE;
+	HAL_TIM_PWM_Start(&htim16, TIM_CHANNEL_1);
+	htim16.Instance->CCR1 = MIN_CCR_SERVO_VALUE;
 	SERVO_Data.state = SERVO_OFF;
 	SERVO_Data.CCR = MIN_CCR_SERVO_VALUE;
 }
@@ -20,9 +20,9 @@ void SERVO_Set_PWM(uint16_t p_ccr_register_value){
 
 void SERVO_Handle(){
 	if(SERVO_Data.state == SERVO_ON){
-		htim4.Instance->CCR3 = SERVO_Data.CCR;
+		htim16.Instance->CCR1 = SERVO_Data.CCR;
 	} else{
 		SERVO_Data.CCR = MIN_CCR_SERVO_VALUE;
-		htim4.Instance->CCR3 = SERVO_Data.CCR;
+		htim16.Instance->CCR1 = SERVO_Data.CCR;
 	}
 }

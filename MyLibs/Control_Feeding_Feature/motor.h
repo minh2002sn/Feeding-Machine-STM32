@@ -1,7 +1,7 @@
 #ifndef MOTOR_H
 #define MOTOR_H
 
-#include "stm32f1xx_hal.h"
+#include "stm32f0xx_hal.h"
 #include "stdint.h"
 
 #define STOP_PWM_VALUE 0

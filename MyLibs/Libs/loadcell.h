@@ -3,7 +3,7 @@
 
 #include "stdint.h"
 #include "stdio.h"
-#include "stm32f1xx_hal.h"
+#include "stm32f0xx_hal.h"
 
 #define NUMBER_OF_SAMPLE 100
 
