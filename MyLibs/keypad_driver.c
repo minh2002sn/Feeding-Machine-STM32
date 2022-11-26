@@ -14,8 +14,7 @@ void KeypadPressingCallback(uint8_t p_key){
 //			} else if(p_key == '2'){
 //				SM_MENU_Set_State();	// This function is in menu.c
 			} else if(p_key == '2'){
-				uint8_t t_Tx_Buffer[] = "GET_NETWORKS\n";
-				HAL_UART_Transmit(&huart2, t_Tx_Buffer, 13, 500);
+				UART_Send_Command(GET_NETWORKS);
 				WS_MENU_Set_State();	// This function is in menu.c
 			}
 			break;

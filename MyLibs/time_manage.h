@@ -3,18 +3,18 @@
 
 #define MAX_OPTIONS 14
 
-//#include "control.h"
+#include "control.h"
 #include "flash.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
 
 typedef struct{
-	uint8_t day;
-	uint8_t hour;
-	uint8_t minute;
-	uint16_t mass;
-}FLASH_DATA_HandleTypeDef;
+	unsigned int day		: 7;
+	unsigned int hour		: 5;
+	unsigned int minute		: 6;
+	unsigned int mass		: 14;
+} __attribute__((packed)) FLASH_DATA_HandleTypeDef;
 
 typedef struct{
 	uint32_t add;

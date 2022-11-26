@@ -19,7 +19,6 @@ dictionary WIFI_Str[4] = {
 		{WIFI_DISCONNECTED, "WF!!!"},
 		{WIFI_CONNECTED, "WF"},
 		{WIFI_CONNECTING, "WF..."},
-		{SMART_CONFIG_RUN, "SM..."},
 };
 
 // Frame include location (row and column index) and string displaying on LCD
@@ -53,27 +52,15 @@ void MAIN_MENU_Set_State_Time(uint8_t p_hour, uint8_t p_minute, uint8_t p_day){
 	uint8_t t_size = sizeof(DAY_Str) / sizeof(dictionary);
 	for(int i = 0; i < t_size; i++){
 		if(DAY_Str[i].index == p_day){
-			sprintf(t_time_str, "%s %d:%d", DAY_Str[i].value, p_hour, p_minute);
+			sprintf(t_time_str, "%s %02d:%02d", DAY_Str[i].value, p_hour, p_minute);
 			break;
 		}
 	}
 	strcpy(main_menu_frame[1].str, t_time_str);
 }
 
-void MAIN_MENU_Set_State_WiFi(char **p_arg_value, uint8_t p_arg_num){
-	if(p_arg_num == 1){
-		if(strstr(p_arg_value[0], "SMART_CONFIG_RUN") != NULL){
-			MAIN_MENU_Data.WIFI_State = SMART_CONFIG_RUN;
-		}
-	} else if(p_arg_num == 2){
-		if(strstr(p_arg_value[1], "DISCONNECTED") != NULL){
-			MAIN_MENU_Data.WIFI_State = WIFI_DISCONNECTED;
-		} else if(strstr(p_arg_value[1], "CONNECTING") != NULL){
-			MAIN_MENU_Data.WIFI_State = WIFI_CONNECTING;
-		} else if(strstr(p_arg_value[1], "CONNECTED") != NULL){
-			MAIN_MENU_Data.WIFI_State = WIFI_CONNECTED;
-		}
-	}
+void MAIN_MENU_Set_State_WiFi(WIFI_STATE_HandleTypeDef p_status){
+	MAIN_MENU_Data.WIFI_State = p_status;
 	if(MENU_Data.state == MAIN_MENU){
 		MENU_Data.changed = 0;
 	}

@@ -106,6 +106,9 @@ void ST_MENU_Set_State_SigKey(uint8_t p_key){
 	MENU_Data.changed = 0;
 	if(p_key == '#'){
 		if(ST_MENU_Data.setting_type != CHECK_AGAIN){
+			if(ST_MENU_Data.digit == 0 && ST_MENU_Data.setting_type != DAY_TYPE){
+				set_time_menu_frame_var[ST_MENU_Data.setting_type].str[0] = '0';
+			}
 			ST_MENU_Data.setting_type++;
 			ST_MENU_Data.digit = 0;
 		} else if(ST_MENU_Data.setting_type == CHECK_AGAIN){
@@ -122,7 +125,8 @@ void ST_MENU_Set_State_SigKey(uint8_t p_key){
 		} else{
 			if(ST_MENU_Data.setting_type > 0){
 				ST_MENU_Data.setting_type--;
-				ST_MENU_Data.digit = strlen(set_time_menu_frame_var[ST_MENU_Data.setting_type].str) - 1;
+				uint8_t t_previous_data_string_length = strlen(set_time_menu_frame_var[ST_MENU_Data.setting_type].str);
+				ST_MENU_Data.digit = (t_previous_data_string_length == 0) ? 0 : t_previous_data_string_length - 1;
 			}
 		}
 
@@ -130,19 +134,19 @@ void ST_MENU_Set_State_SigKey(uint8_t p_key){
 }
 
 void ST_MENU_Display(){
+	LCD_Clear(MENU_Data.hlcd);
+	LCD_Cursor_Blink(MENU_Data.hlcd);
+	for(int i = 0; i < 5; i++){
+		LCD_Set_Cursor(MENU_Data.hlcd, set_time_menu_frame_const[i].col, set_time_menu_frame_const[i].row);
+		LCD_Write(MENU_Data.hlcd, set_time_menu_frame_const[i].str);
+	}
+	for(int i = 0; i < 4; i++){
+		LCD_Set_Cursor(MENU_Data.hlcd, set_time_menu_frame_var[i].col, set_time_menu_frame_var[i].row);
+		LCD_Write(MENU_Data.hlcd, set_time_menu_frame_var[i].str);
+	}
 	if(ST_MENU_Data.setting_type == CHECK_AGAIN){
 		LCD_Cursor_No_Blink(MENU_Data.hlcd);
 	} else{
-		LCD_Clear(MENU_Data.hlcd);
-		LCD_Cursor_Blink(MENU_Data.hlcd);
-		for(int i = 0; i < 5; i++){
-			LCD_Set_Cursor(MENU_Data.hlcd, set_time_menu_frame_const[i].col, set_time_menu_frame_const[i].row);
-			LCD_Write(MENU_Data.hlcd, set_time_menu_frame_const[i].str);
-		}
-		for(int i = 0; i < 4; i++){
-			LCD_Set_Cursor(MENU_Data.hlcd, set_time_menu_frame_var[i].col, set_time_menu_frame_var[i].row);
-			LCD_Write(MENU_Data.hlcd, set_time_menu_frame_var[i].str);
-		}
 		LCD_Set_Cursor(MENU_Data.hlcd, set_time_menu_frame_var[ST_MENU_Data.setting_type].col + ST_MENU_Data.digit, set_time_menu_frame_var[ST_MENU_Data.setting_type].row);
 	}
 }

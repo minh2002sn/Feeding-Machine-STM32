@@ -38,7 +38,7 @@ void LC_Calibration(LC_HandleTypeDef *p_hlc){
 	float t_x1 = 0;
 	float t_x0 = 0;
 
-	HAL_UART_Transmit(&huart1, "Getting t_x0\n", 13, 100);
+	HAL_UART_Transmit(&huart1, (uint8_t *)"Getting t_x0\n", 13, 100);
 
 //	p_hlc->calib_state = GETTING_X0;
 	for(int i = 0; i < NUMBER_OF_SAMPLE; i++){
@@ -48,10 +48,10 @@ void LC_Calibration(LC_HandleTypeDef *p_hlc){
 	t_x0 /= (float)NUMBER_OF_SAMPLE;
 
 //	p_hlc->calib_state = WAITING_SAMPLE_MASS;
-	HAL_UART_Transmit(&huart1, "Waiting sample mass\n", 20, 100);
+	HAL_UART_Transmit(&huart1, (uint8_t *)"Waiting sample mass\n", 20, 100);
 	while(1){
 		if(LC_Read(p_hlc) > t_x0 + 10000){
-			HAL_UART_Transmit(&huart1, "Getting t_x1\n", 13, 100);
+			HAL_UART_Transmit(&huart1, (uint8_t *)"Getting t_x1\n", 13, 100);
 //			p_hlc->calib_state = GETTING_X1;
 			HAL_Delay(2000);
 			for(int i = 0; i < NUMBER_OF_SAMPLE; i++){
@@ -66,11 +66,11 @@ void LC_Calibration(LC_HandleTypeDef *p_hlc){
 	p_hlc->b = -t_y1 * t_x0 / (t_x1 - t_x0);
 
 	uint8_t t_Tx_Buff[20] = {};
-	sprintf((char*)t_Tx_Buff, "%lf ", p_hlc->a);
+//	sprintf((char*)t_Tx_Buff, "%lf ", p_hlc->a);
 	HAL_UART_Transmit(&huart1, t_Tx_Buff, 20, 500);
-	sprintf((char*)t_Tx_Buff, "%lf\n", p_hlc->b);
+//	sprintf((char*)t_Tx_Buff, "%lf\n", p_hlc->b);
 	HAL_UART_Transmit(&huart1, t_Tx_Buff, 20, 500);
-	HAL_UART_Transmit(&huart1, "Calibrate done\n", 15, 100);
+	HAL_UART_Transmit(&huart1, (uint8_t *)"Calibrate done\n", 15, 100);
 
 //	p_hlc->calib_state = CALIBRATED;
 }

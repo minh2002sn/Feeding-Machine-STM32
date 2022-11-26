@@ -27,8 +27,9 @@
 #include "uart.h"
 #include "loadcell.h"
 #include "control.h"
-
+#include "min.h"
 #include "Keypad.h"
+#include "menu.h"
 
 /* USER CODE END Includes */
 
@@ -76,7 +77,6 @@ static void MX_USART1_UART_Init(void);
 
 LCD_I2C_HandleTypeDef hlcd;
 LC_HandleTypeDef hlc1, hlc2, hlc3;
-MPU6050_t mpu;
 
 static uint8_t Rx_Buffer;
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *p_huart){
@@ -125,25 +125,34 @@ int main(void)
 
   HAL_UART_Receive_IT(&huart2, &Rx_Buffer, 1);
 //  HAL_UART_Receive_IT(&huart1, &Rx_Buffer_1, 1);
+  UART_Init();
   LCD_Init(&hlcd, &hi2c2, 20, 4, 0x4E);
-  LC_Init(&hlc1, GPIOA, GPIO_PIN_4, GPIOA, GPIO_PIN_5, 0.001045, -8832.797852, 0.0);
+  LC_Init(&hlc1, GPIOA, GPIO_PIN_4, GPIOA, GPIO_PIN_5, 0.001142, -9671.430664, 0.0);
   LC_Init(&hlc2, GPIOA, GPIO_PIN_6, GPIOA, GPIO_PIN_7, 0.001144, -9502.714844, 0.0);
-  LC_Init(&hlc3, GPIOB, GPIO_PIN_0, GPIOB, GPIO_PIN_1, 0.001142, -9671.430664, 0.0);
-//  LC_Calibration(&hlc1);
-//  LC_Calibration(&hlc2);
-//  LC_Calibration(&hlc3);
-//  MPU6050_init();
+  LC_Init(&hlc3, GPIOB, GPIO_PIN_0, GPIOB, GPIO_PIN_1, 0.000443, -3793.729492, 0.0);
+//  LC_Init(&hlc1, GPIOA, GPIO_PIN_4, GPIOA, GPIO_PIN_5, 0.001045, -8832.797852, 0.0);
+//  LC_Init(&hlc2, GPIOA, GPIO_PIN_6, GPIOA, GPIO_PIN_7, 0.001144, -9502.714844, 0.0);
+//  LC_Init(&hlc1, GPIOA, GPIO_PIN_4, GPIOA, GPIO_PIN_5, 0.001142, -9671.430664, 0.0);
+//  LC_Init(&hlc2, GPIOA, GPIO_PIN_6, GPIOA, GPIO_PIN_7, 0.000443, -3793.729492, 0.0); // Green loadcell No.1
+//  LC_Init(&hlc2, GPIOA, GPIO_PIN_6, GPIOA, GPIO_PIN_7, 0.000438, -3857.287842, 0.0); // Green loadcell No.2
+//  LC_Init(&hlc3, GPIOB, GPIO_PIN_0, GPIOB, GPIO_PIN_1, 0.000432, -3543.432617, 0.0); // Green loadcell No.3
   MENU_Init(&hlcd);
   CONTROL_Init(&hlc1, &hlc2, &hlc3);
 
-  // Send command to get WiFi connection
-  HAL_UART_Transmit(&huart2, (uint8_t *)"GET_CONNECTION\n", 15, 500);
-  // Wait for reply
-  HAL_Delay(500);
-  // Handle reply
-  UART_Handle();
-  // Send command to get real time data, the reply will be handled in while loop
-  HAL_UART_Transmit(&huart2, (uint8_t *)"GET_REAL_TIME\n", 14, 500);
+  //  LC_Calibration(&hlc1);
+  //  LC_Calibration(&hlc2);
+  //  LC_Calibration(&hlc3);
+  UART_Send_Command(GET_REAL_TIME);
+  UART_Send_Command(GET_CONNECTION);
+
+//  // Send command to get WiFi connection
+//  HAL_UART_Transmit(&huart2, (uint8_t *)"GET_CONNECTION\n", 15, 500);
+//  // Wait for reply
+//  HAL_Delay(500);
+//  // Handle reply
+//  UART_Handle();
+//  // Send command to get real time data, the reply will be handled in while loop
+//  HAL_UART_Transmit(&huart2, (uint8_t *)"GET_REAL_TIME\n", 14, 500);
 
   /* USER CODE END 2 */
 

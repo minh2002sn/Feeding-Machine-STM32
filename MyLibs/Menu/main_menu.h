@@ -9,10 +9,9 @@
 #include "dictionary.h"
 
 typedef enum{
-	WIFI_DISCONNECTED,
 	WIFI_CONNECTED,
+	WIFI_DISCONNECTED,
 	WIFI_CONNECTING,
-	SMART_CONFIG_RUN,
 }WIFI_STATE_HandleTypeDef;
 
 typedef struct{
@@ -27,7 +26,7 @@ typedef struct{
 void MAIN_MENU_Init();
 void MAIN_MENU_Set_State();
 void MAIN_MENU_Set_State_Time(uint8_t p_hour, uint8_t p_minute, uint8_t p_day);
-void MAIN_MENU_Set_State_WiFi(char **p_arg_value, uint8_t p_arg_num);
+void MAIN_MENU_Set_State_WiFi(WIFI_STATE_HandleTypeDef p_status);
 void MAIN_MENU_Display();
 
 extern MAIN_MENU_DATA_HandleTypeDef MAIN_MENU_Data;

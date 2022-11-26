@@ -1,6 +1,11 @@
 #include "time_manage.h"
 
-#define DATA_FRAME_SIZE 6 // in byte
+#define DATA_FRAME_SIZE_BYTE 	(sizeof(FLASH_DATA_HandleTypeDef))	// in byte
+#define DATA_FRAME_SIZE_BIT		(DATA_FRAME_SIZE_BYTE * 8)			// in bit
+#define DAY_DATA_MASK			0x0000007F
+#define HOUR_DATA_MASK			0x00000F80
+#define MINUTE_DATA_MASK		0x0003F000
+#define MASS_DATA_MASK			0xFFFC0000
 
 extern UART_HandleTypeDef huart2;
 TIME_DATA_HandleTypdeDef TIME_Data;
@@ -22,18 +27,12 @@ void TIME_Init(){
 	TIME_Data.add = FIRST_PAGE_ADD + BYTE_PER_PAGE * 63;
 	TIME_Data.len = 0;
 	for(int i = 0; i < MAX_OPTIONS; i++){
-		uint8_t t_data[DATA_FRAME_SIZE] = {};
-		FLASH_Read(TIME_Data.add + i*DATA_FRAME_SIZE, t_data, DATA_FRAME_SIZE);
-		if(t_data[0] == 0xFF){
-			TIME_Data.flash_data[i].day = 0xFF;
-			TIME_Data.flash_data[i].hour = 0xFF;
-			TIME_Data.flash_data[i].minute = 0xFF;
-			TIME_Data.flash_data[i].mass = 0xFFFF;
+		uint8_t t_data[DATA_FRAME_SIZE_BYTE] = {};
+		FLASH_Read(TIME_Data.add + i*DATA_FRAME_SIZE_BYTE, t_data, DATA_FRAME_SIZE_BYTE);
+		if(*((uint32_t *)t_data) == 0xFFFFFFFF){
+			*(uint32_t *)(TIME_Data.flash_data + i) = 0xFFFFFFFF;
 		} else{
-			TIME_Data.flash_data[i].day = t_data[0];
-			TIME_Data.flash_data[i].hour = t_data[1];
-			TIME_Data.flash_data[i].minute = t_data[2];
-			TIME_Data.flash_data[i].mass = t_data[3] | (uint16_t)t_data[4] << 8;
+			TIME_Data.flash_data[i] = *((FLASH_DATA_HandleTypeDef *)t_data);
 			TIME_Data.len++;
 		}
 	}
@@ -48,7 +47,6 @@ void TIME_Add(uint8_t p_day, uint8_t p_hour, uint8_t p_minute, uint16_t p_mass){
 		TIME_Data.len++;
 		TIME_Sort();
 		TIME_Store_To_Flash();
-//		CONTROL_Recheck_Time();
 	}
 }
 
@@ -68,13 +66,8 @@ void TIME_Delete(uint8_t p_index){
 			TIME_Data.flash_data[i] = TIME_Data.flash_data[i+1];
 			TIME_Data.flash_data[i+1] = t_temp;
 		}
-		TIME_Data.flash_data[TIME_Data.len - 1].day = 0xFF;
-		TIME_Data.flash_data[TIME_Data.len - 1].hour = 0xFF;
-		TIME_Data.flash_data[TIME_Data.len - 1].minute = 0xFF;
-		TIME_Data.flash_data[TIME_Data.len - 1].mass = 0xFFFF;
+		*((uint32_t *)(TIME_Data.flash_data + TIME_Data.len - 1)) = 0xFFFFFFFF;
 		TIME_Data.len--;
-		TIME_Store_To_Flash();
-//		CONTROL_Recheck_Time();
 	}
 }
 
@@ -94,15 +87,11 @@ void TIME_Sort(){
 }
 
 void TIME_Store_To_Flash(){
-	uint8_t *t_data;
-	t_data = (uint8_t *)malloc(TIME_Data.len * DATA_FRAME_SIZE * sizeof(uint8_t));
+	FLASH_DATA_HandleTypeDef *t_flash_data;
+	t_flash_data = (FLASH_DATA_HandleTypeDef *)malloc(TIME_Data.len * DATA_FRAME_SIZE_BIT);
 	for(int i = 0; i < TIME_Data.len; i++){
-		*(t_data + i * DATA_FRAME_SIZE) = TIME_Data.flash_data[i].day;
-		*(t_data + i * DATA_FRAME_SIZE + 1) = TIME_Data.flash_data[i].hour;
-		*(t_data + i * DATA_FRAME_SIZE + 2) = TIME_Data.flash_data[i].minute;
-		*(t_data + i * DATA_FRAME_SIZE + 3) = TIME_Data.flash_data[i].mass;
-		*(t_data + i * DATA_FRAME_SIZE + 4) = TIME_Data.flash_data[i].mass >> 8;
-		*(t_data + i * DATA_FRAME_SIZE + 5) = 0xFF;
+		*(t_flash_data + i) = *(TIME_Data.flash_data + i);
 	}
-	FLASH_Write(63, t_data, TIME_Data.len * DATA_FRAME_SIZE);
+	FLASH_Write(63, (uint8_t *)t_flash_data, TIME_Data.len * DATA_FRAME_SIZE_BYTE);
+	free(t_flash_data);
 }

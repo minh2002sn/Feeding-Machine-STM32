@@ -4,10 +4,12 @@
 //#include "read_time.h"
 #include "stdint.h"
 #include "stm32f0xx_hal.h"
-#include "cli_command.h"
+#include "ring_buffer.h"
 
 void UART_Init();
 void UART_Handle();
-void UART_Receive(uint8_t P_Rx_Buffer);
+uint8_t UART_Read();
+void UART_Receive(uint8_t Rx_Buffer);
+uint16_t UART_Available();
 
 #endif

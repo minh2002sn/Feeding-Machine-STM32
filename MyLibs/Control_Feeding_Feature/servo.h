@@ -3,9 +3,9 @@
 
 #include "stm32f0xx_hal.h"
 
-#define MIN_CCR_SERVO_VALUE		510
+#define MIN_CCR_SERVO_VALUE		800
 #define MAX_CCR_SERVO_VALUE		2500
-#define OPEN_CCR_SERVO_VALUE	800
+#define OPEN_CCR_SERVO_VALUE	1100
 
 typedef enum{
 	SERVO_OFF,

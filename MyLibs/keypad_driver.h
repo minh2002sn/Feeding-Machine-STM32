@@ -3,6 +3,7 @@
 
 #include "menu.h"
 #include "Keypad.h"
+#include "uart_frame.h"
 
 void KEYPAD_DRIVER_Handle();
 
